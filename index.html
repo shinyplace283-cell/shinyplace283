@@ -1,16 +1,17 @@
 <!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
+<!-- saved from url=(0049)file:///Users/shimizutaiki/Downloads/index_2.html -->
+<html lang="ja"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ファインダーUI＋気配 見本</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600&family=Yomogi&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<title>嘘シャニマス聖地合同／パフェコミ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link href="./嘘シャニマス聖地合同／パフェコミ_files/css2" rel="stylesheet">
 <style>
 *{ margin:0; padding:0; box-sizing:border-box; }
 body{ background:#070809; color:#fff; font-family:'Zen Kaku Gothic New',sans-serif; padding:26px 18px 70px; }
-.wrap{ max-width:920px; margin:0 auto; }
+body{ background:#070809; color:#fff; font-family:'Zen Kaku Gothic New',sans-serif; padding:0; }
+.wrap{ max-width:1180px; margin:0 auto; min-height:100vh; display:flex; flex-direction:column; justify-content:center; padding:18px; }
 h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
 .lead{ font-size:13px; color:rgba(255,255,255,.6); margin:8px 0 6px; line-height:1.8; }
 .warn{ font-size:12px; color:#ffcf6b; margin:0 0 18px; line-height:1.7; }
@@ -106,8 +107,28 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
 @keyframes flashanim{ 0%{opacity:0} 8%{opacity:.92} 100%{opacity:0} }
 .flashing .flash{ animation:flashanim .5s ease-out; }
 
-/* CAPTURED 印 */
-.capbadge{ position:absolute; top:14%; left:2.6cqw; z-index:162; display:none;
+/* タイトル（レンズキャップ）＝暗幕。OKで暗→明フェード（B案） */
+.cap{ position:absolute; inset:0; z-index:210; background:#000;
+    display:flex; align-items:center; justify-content:center; text-align:center;
+    transition:opacity 1s ease; }
+.cap.off{ opacity:0; pointer-events:none; }
+.cap-inner{ display:flex; flex-direction:column; align-items:center; gap:2.4cqh; padding:6cqh 4cqw; }
+.cap-title{ font-family:'Zen Kaku Gothic New',sans-serif; font-weight:700;
+    font-size:4.4cqh; letter-spacing:.14em; color:#f2f2f2; }
+.cap-sub{ font-family:'Zen Kaku Gothic New',sans-serif; font-size:1.9cqh;
+    letter-spacing:.08em; color:#b9b9b9; }
+.cap-ok{ margin-top:1.2cqh; padding:1.3cqh 4cqw; background:transparent; color:#fff;
+    border:1px solid rgba(255,255,255,.55); border-radius:2px; cursor:pointer;
+    font-family:'Rajdhani',sans-serif; font-weight:600; letter-spacing:.16em;
+    font-size:2cqh; transition:background .2s, border-color .2s; }
+.cap-ok:hover{ background:rgba(255,255,255,.12); border-color:#fff; }
+.cap-hint{ font-family:'Share Tech Mono',monospace; font-size:1.4cqh;
+    letter-spacing:.1em; color:#7f7f7f; margin-top:.6cqh; }
+.cap-yt{ font-family:'Zen Kaku Gothic New',sans-serif; font-size:1.5cqh;
+    color:#8f8f8f; text-decoration:underline; margin-top:1.4cqh; }
+.cap-yt:hover{ color:#cfcfcf; }
+
+
     font-family:'Share Tech Mono',monospace; font-size:1.2cqw; letter-spacing:.2em; color:rgba(255,255,255,.9);
     border:1px solid rgba(255,255,255,.6); padding:0.3cqw 0.8cqw; }
 .captured .capbadge{ display:block; }
@@ -205,14 +226,20 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
 </head>
 <body>
 <div class="wrap">
-    <h1>フェーズ1：シャッター → コミュ再生 → チェキ共有</h1>
-    <p class="lead">シャッターでコミュ（YouTube）を見て、閉じると<b>撮ってきた「チェキ」</b>が現れます（撮影瞬間の風景＋白フチ＋作品名・アイドル名・作者・日時）。「チェキを保存」して<b>Xに手動添付</b>、または「𝕏 で共有」でテキスト＋URLを投稿。<br>
-       人それぞれ違う1枚になります。背景順は未訪問優先のランダム。スライド＝◀▶ / ← →、シャッター＝中央下 or Space。</p>
-    <p class="warn">⚠ 8本の背景動画（FJ1.mp4 / J@Q1.mp4 / nabe1.mp4 / nabe2.mp4 / wako1.mp4 / wako2.mp4 / wako3.mp4 / duka1.mp4）を、このHTMLと同じフォルダに置いて開いてください。背景が黒いままなら .mp4 が再生できていません（.mp4 変換が必要）。YouTube再生にはネット接続が必要です。</p>
+    <div class="screen font04 logpos-bottom play-log" id="scr">
+        <div class="stage slidefx" id="stage"><video id="vid" src="wako2.MOV" autoplay="" loop="" muted="" playsinline=""></video></div>
+        <div class="novid">FJ1.MOV を読み込み中…<br>表示されない場合は同じフォルダに動画を置いてください</div>
 
-    <div class="screen font04 logpos-bottom" id="scr">
-        <div class="stage" id="stage"><video id="vid" src="FJ1.mp4" autoplay loop muted playsinline></video></div>
-        <div class="novid">FJ1.mp4 を読み込み中…<br>表示されない場合は同じフォルダに動画を置いてください</div>
+        <!-- タイトル（レンズキャップ） -->
+        <div class="cap" id="cap">
+            <div class="cap-inner">
+                <div class="cap-title">嘘シャニマス聖地合同</div>
+                <div class="cap-sub">シャッターを切って思い出を振り返ろう</div>
+                <button class="cap-ok" onclick="startExperience()">フォトモードを始める</button>
+                <div class="cap-hint">SPACE ／ シャッターで撮影　　←→ でスライド</div>
+                <a class="cap-yt" id="cap-yt" href="file:///Users/shimizutaiki/Downloads/index_2.html#" onclick="return false;" target="_blank" rel="noopener">撮影をやめて YouTube で見る</a>
+            </div>
+        </div>
 
         <div class="grain"></div>
 
@@ -221,7 +248,7 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
 
         <!-- 気配エフェクト層 -->
         <div class="fx-dof"></div>
-        <div class="fx-evlum" id="evlum"></div>
+        <div class="fx-evlum" id="evlum" style="opacity: 0; background: rgb(0, 0, 0);"></div>
         <div class="level"><span class="ring"></span><span class="lh"></span><span class="rh"></span><span class="dot"></span></div>
         <div class="focusbox"><span class="a"></span><span class="b"></span><span class="c"></span><span class="d"></span></div>
         <div class="afind">◎ AF</div>
@@ -241,16 +268,16 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
                     <div class="item"><span class="lbl">MODE</span><span class="val">A</span></div>
                     <div class="picto" aria-hidden="true">
                         <!-- 測光モード（評価測光：枠＋格子状の点） -->
-                        <svg viewBox="0 0 16 12"><rect x="1.5" y="1.5" width="13" height="9" rx="1.2" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="8" cy="6" r="1.1" fill="currentColor"/><circle cx="4.6" cy="4" r=".5" fill="currentColor"/><circle cx="11.4" cy="4" r=".5" fill="currentColor"/><circle cx="4.6" cy="8" r=".5" fill="currentColor"/><circle cx="11.4" cy="8" r=".5" fill="currentColor"/></svg>
+                        <svg viewBox="0 0 16 12"><rect x="1.5" y="1.5" width="13" height="9" rx="1.2" fill="none" stroke="currentColor" stroke-width="1"></rect><circle cx="8" cy="6" r="1.1" fill="currentColor"></circle><circle cx="4.6" cy="4" r=".5" fill="currentColor"></circle><circle cx="11.4" cy="4" r=".5" fill="currentColor"></circle><circle cx="4.6" cy="8" r=".5" fill="currentColor"></circle><circle cx="11.4" cy="8" r=".5" fill="currentColor"></circle></svg>
                         <!-- AFエリア（四隅ブラケット） -->
-                        <svg viewBox="0 0 14 12"><path d="M1 4 V2 H3 M11 2 H13 V4 M13 8 V10 H11 M3 10 H1 V8" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="7" cy="6" r="1" fill="currentColor"/></svg>
+                        <svg viewBox="0 0 14 12"><path d="M1 4 V2 H3 M11 2 H13 V4 M13 8 V10 H11 M3 10 H1 V8" fill="none" stroke="currentColor" stroke-width="1"></path><circle cx="7" cy="6" r="1" fill="currentColor"></circle></svg>
                         <!-- 手ブレ補正（中心＋揺れの弧） -->
-                        <svg viewBox="0 0 16 12"><circle cx="8" cy="6" r="1.3" fill="currentColor"/><path d="M3.5 2.5 A5 5 0 0 0 3.5 9.5" fill="none" stroke="currentColor" stroke-width="1"/><path d="M12.5 2.5 A5 5 0 0 1 12.5 9.5" fill="none" stroke="currentColor" stroke-width="1"/></svg>
+                        <svg viewBox="0 0 16 12"><circle cx="8" cy="6" r="1.3" fill="currentColor"></circle><path d="M3.5 2.5 A5 5 0 0 0 3.5 9.5" fill="none" stroke="currentColor" stroke-width="1"></path><path d="M12.5 2.5 A5 5 0 0 1 12.5 9.5" fill="none" stroke="currentColor" stroke-width="1"></path></svg>
                     </div>
                 </div>
                 <div class="cluster center"></div>
                 <div class="cluster right">
-                    <div class="item"><span class="lbl">TIME</span><span class="val" id="clock">--:--</span></div>
+                    <div class="item"><span class="lbl">TIME</span><span class="val" id="clock">20:57</span></div>
                     <div class="batt2"></div>
                     <div class="item"><span class="lbl">ALBUM</span><span class="val"><span id="album">0</span>/8</span></div>
                 </div>
@@ -281,7 +308,7 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
                             <span class="tick major" style="left:80%"></span><span class="tick minor" style="left:85%"></span>
                             <span class="tick major" style="left:90%"></span><span class="tick minor" style="left:95%"></span>
                             <span class="tick major" style="left:100%"></span>
-                            <span class="needle" id="evneedle"></span>
+                            <span class="needle" id="evneedle" style="left: 50%;"></span>
                         </div>
                         <div class="expnums">
                             <span style="left:0%">-5</span><span style="left:20%">-3</span><span style="left:40%">-1</span>
@@ -295,7 +322,7 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
             </div>
 
             <!-- 検知ログ（映像エリア右下） -->
-            <div class="log"><span class="msg">&gt; PRESENCE DETECTED</span><br><span class="who who1">七草にちか</span><br><span class="who who2"></span></div>
+            <div class="log"><span class="msg">&gt; MOVEMENT TRACED</span><br><span class="who who1" style="color: rgb(80, 208, 208);">浅倉透</span><br><span class="who who2" style="color: rgb(190, 30, 62);">樋口円香</span></div>
 
             <!-- CAPTURED 印 -->
             <div class="capbadge">✓ CAPTURED</div>
@@ -306,10 +333,10 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
 
         <!-- コミュ再生（YouTube埋め込み） -->
         <div class="player" id="player">
-            <div class="frame"><iframe id="ytframe" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>
+            <div class="frame"><iframe id="ytframe" allow="autoplay; encrypted-media" allowfullscreen="" src="./嘘シャニマス聖地合同／パフェコミ_files/saved_resource.html"></iframe></div>
             <div class="credit"><span class="credit-title" id="credit-title">タイトル</span><span class="credit-author" id="credit-author">制作者</span></div>
             <div class="pbtns">
-                <a class="pyt pxshare" id="xshare" href="#" target="_blank" rel="noopener">𝕏 で共有</a>
+                <a class="pyt pxshare" id="xshare" href="file:///Users/shimizutaiki/Downloads/index_2.html#" target="_blank" rel="noopener">𝕏 で共有</a>
                 <button class="pclose" onclick="closePlayer()">× ファインダーに戻る</button>
             </div>
             <p class="pnote">※ 埋め込みが「エラー153」等で再生されない場合は、ローカルサーバー経由（http://localhost…）で開いてください。タイトル画面の「YouTubeでまとめて見る」からも視聴できます。</p>
@@ -319,8 +346,8 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
         <div class="afterglow" id="afterglow">
             <img id="ag-photo" class="ag-photo" alt="撮影したチェキ">
             <div class="pbtns">
-                <a class="pyt pxshare" id="ag-xshare" href="#" target="_blank" rel="noopener">𝕏 で共有</a>
-                <a class="pyt" id="ag-save" href="#" download>⬇ チェキを保存</a>
+                <a class="pyt pxshare" id="ag-xshare" href="file:///Users/shimizutaiki/Downloads/index_2.html#" target="_blank" rel="noopener">𝕏 で共有</a>
+                <a class="pyt" id="ag-save" href="file:///Users/shimizutaiki/Downloads/index_2.html#" download="">⬇ チェキを保存</a>
                 <button class="pclose" onclick="closeAfterglow()">× ファインダーに戻る</button>
             </div>
             <p class="pnote">Xは画像を自動添付できないため、「チェキを保存」してから投稿に添付してください。</p>
@@ -330,20 +357,10 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
     <div class="controls">
         <button class="slide" onclick="slide(-1)">◀ スライド</button>
         <button class="slide" onclick="slide(1)">スライド ▶</button>
-        <span class="status" id="status">FJ1.mp4</span>
+        <span class="status" id="status">wako2.MOV</span>
         <span class="sep"></span>
         <button class="fs" onclick="goFs()">⛶ 全画面</button>
     </div>
-
-    <div class="controls">
-        <span style="font-size:12px;color:rgba(255,255,255,.5);">個別確認：</span>
-        <button class="mini" onclick="fire('play-af',1500)">A フォーカス</button>
-        <button class="mini" onclick="fire('play-wave',900)">B 波形</button>
-        <button class="mini" onclick="fireLog()">D 検知ログ</button>
-    </div>
-
-    <p class="tip">「◀ スライド ▶」を押すたびに、背景が切り替わる体で A〜D の気配がランダムで1個（たまに2個）発動します。<br>
-       実際の本編では、矢印キーで動画を移動するたびにこれが起きます。</p>
 </div>
 
 <script>
@@ -416,27 +433,27 @@ const NAME = {
 
 // 検知ログの機械的メッセージ（問いかけ系は不採用／先頭に >）
 const LOGMSG = [
-    '> PRESENCE DETECTED', '> mp4EMENT TRACED', '> SIGNAL FOUND',
+    '> PRESENCE DETECTED', '> MOVEMENT TRACED', '> SIGNAL FOUND',
     '> SUBJECT LOCKED', '> HEAT SIGNATURE', '> OBJECT IDENTIFIED'
 ];
 // ★ 全コミュデータ（CSVより）。persons は最大2人＝検知ログに2行表示
 // rep=共有文面の代表アイドル / handle=作者のXアカウント（@、後で記入）
 const SPOTS = [
-    { file:'FJ1.mp4',   ytid:'0e7q_znhh38', author:'FJオクト', title:'紅茶時間', rep:'七草にちか', handle:'',
+    { file:'FJ1.MOV',   ytid:'0e7q_znhh38', author:'FJオクト', title:'紅茶時間', rep:'七草にちか', handle:'',
       persons:[{name:'七草にちか',color:'#a6cdb6'},{name:'緋田美琴',color:'#760f10'}] },
-    { file:'J@Q1.mp4',   ytid:'Eg_CZoubROs', author:'J@Q', title:'ビッグに', rep:'七草にちか', handle:'',
+    { file:'J@Q1.MOV',   ytid:'Eg_CZoubROs', author:'J@Q', title:'ビッグに', rep:'七草にちか', handle:'',
       persons:[{name:'七草にちか',color:'#a6cdb6'}] },
-    { file:'nabe1.mp4', ytid:'WAOYHb0y3uw', author:'無駄にデカい鍋敷き', title:'Nさん', rep:'福丸小糸', handle:'',
+    { file:'nabe1.MOV', ytid:'WAOYHb0y3uw', author:'無駄にデカい鍋敷き', title:'Nさん', rep:'福丸小糸', handle:'',
       persons:[{name:'福丸小糸',color:'#7967c3'},{name:'UNKNOWN:N',color:'#ffffff'}] },
-    { file:'nabe2.mp4', ytid:'-vJ6bqCXpeg', author:'無駄にデカい鍋敷き', title:'どこから春が', rep:'桑山千雪', handle:'',
+    { file:'nabe2.MOV', ytid:'-vJ6bqCXpeg', author:'無駄にデカい鍋敷き', title:'どこから春が', rep:'桑山千雪', handle:'',
       persons:[{name:'桑山千雪',color:'#fafafa'}] },
-    { file:'wako1.mp4', ytid:'LMlPdnIar-Y', author:'わこー', title:'他人の瞳は異世界の窓', rep:'櫻木真乃', handle:'',
+    { file:'wako1.MOV', ytid:'LMlPdnIar-Y', author:'わこー', title:'他人の瞳は異世界の窓', rep:'櫻木真乃', handle:'',
       persons:[{name:'櫻木真乃',color:'#ffbad6'},{name:'UNKNOWN',color:'#ffffff'}] },
-    { file:'wako2.mp4', ytid:'-kbS5f1QrMA', author:'わこー', title:'境界域', rep:'浅倉透', handle:'',
+    { file:'wako2.MOV', ytid:'-kbS5f1QrMA', author:'わこー', title:'境界域', rep:'浅倉透', handle:'',
       persons:[{name:'浅倉透',color:'#50d0d0'},{name:'樋口円香',color:'#be1e3e'}] },
-    { file:'wako3.mp4', ytid:'7VSbOnmi5HE', author:'わこー', title:'水曜日のアップダウン4月15日放送回', rep:'七草にちか', handle:'',
+    { file:'wako3.MOV', ytid:'7VSbOnmi5HE', author:'わこー', title:'水曜日のアップダウン4月15日放送回', rep:'七草にちか', handle:'',
       persons:[{name:'七草にちか',color:'#a6cdb6'},{name:'OTHERS:7',color:'#ffffff'}] },
-    { file:'duka1.mp4', ytid:'u01QXRr_2Io', author:'ヅカマゲドン', title:'Vlogはじめました', rep:'芹沢あさひ', handle:'',
+    { file:'duka1.MOV', ytid:'u01QXRr_2Io', author:'ヅカマゲドン', title:'Vlogはじめました', rep:'芹沢あさひ', handle:'',
       persons:[{name:'芹沢あさひ',color:'#f30100'}] },
 ];
 // 共有リンク（サイトのURL。後で正式URLに差し替え）
@@ -467,7 +484,7 @@ let spinGen = 0;
 function clearFx(){
     fxTimers.forEach(id=>clearTimeout(id)); fxTimers.clear();
     spinGen++;  // 進行中の露出ぐるぐるを無効化
-    scr.classList.remp4e('play-af','play-wave','play-log','focus-on');
+    scr.classList.remove('play-af','play-wave','play-log','focus-on');
     const ssEl=document.getElementById('ss'), isoEl=document.getElementById('iso');
     if(ssEl) ssEl.textContent=SS_BASE;
     if(isoEl) isoEl.textContent=ISO_BASE;
@@ -516,13 +533,13 @@ function setEVlum(leftPct){
 }
 
 function fire(cls, dur){
-    scr.classList.remp4e(cls); void scr.offsetWidth; scr.classList.add(cls);
-    const id=setTimeout(()=>{ scr.classList.remp4e(cls); fxTimers.delete(id); }, dur+60);
+    scr.classList.remove(cls); void scr.offsetWidth; scr.classList.add(cls);
+    const id=setTimeout(()=>{ scr.classList.remove(cls); fxTimers.delete(id); }, dur+60);
     fxTimers.add(id);
     // AF合焦時：合焦マークを白く点灯（ロックの瞬間あたり）
     if(cls==='play-af'){
         const id2=setTimeout(()=>{ scr.classList.add('focus-on'); fxTimers.delete(id2);
-            const id3=setTimeout(()=>{ scr.classList.remp4e('focus-on'); fxTimers.delete(id3); }, 650);
+            const id3=setTimeout(()=>{ scr.classList.remove('focus-on'); fxTimers.delete(id3); }, 650);
             fxTimers.add(id3);
         }, 850);
         fxTimers.add(id2);
@@ -540,7 +557,7 @@ function fireLog(){
     else { w1.style.display='none'; }
     if(persons[1]){ w2.textContent=persons[1].name; w2.style.color=persons[1].color; w2.style.display=''; }
     else { w2.textContent=''; w2.style.display='none'; }
-    scr.classList.remp4e('play-log'); void scr.offsetWidth; scr.classList.add('play-log');
+    scr.classList.remove('play-log'); void scr.offsetWidth; scr.classList.add('play-log');
 }
 
 function randomPresence(){
@@ -569,7 +586,7 @@ function showSpot(i, withFx){
     scr.classList.toggle('captured', viewed.has(spot.file));
     document.getElementById('status').textContent = spot.file + (viewed.has(spot.file)?'（CAPTURED）':'');
 
-    stage.classList.remp4e('slidefx'); void stage.offsetWidth; stage.classList.add('slidefx');
+    stage.classList.remove('slidefx'); void stage.offsetWidth; stage.classList.add('slidefx');
     // スライド時：カメラの反応（露出・EV・検知ログ）。気配は波形を控えめ＋AFは数秒以内に
     nudgeExposure(); jiggleEV();
     if(withFx){
@@ -611,6 +628,20 @@ function setLogPos(p){ /* 検知ログは右下で確定済み */ }
 
 // ───── シャッター → コミュ再生 ─────
 let playerOpen = false;
+let capOpen = true;          // タイトル（レンズキャップ）表示中
+// OKボタン：キャップを外して体験開始。直後に最初の1枚で必ずAF
+function startExperience(){
+    if(!capOpen) return;
+    capOpen = false;
+    const cap = document.getElementById('cap');
+    cap.classList.add('off');                 // 暗→明フェード（B案）
+    setTimeout(()=>{ cap.style.display='none'; }, 1000);
+    try{ vid.play(); }catch(e){}
+    // 蓋を外した最初の被写体で、必ずAFが作動
+    setTimeout(()=>{
+        if(!afFiredThisSpot && !playerOpen){ fire('play-af', POOL['play-af']); afFiredThisSpot = true; }
+    }, 650);
+}
 let lastShot = null;          // { frameURL, shotAt, spot } 撮影した瞬間
 let chekiURL = null;          // 生成したチェキ画像
 
@@ -687,7 +718,7 @@ function shoot(){
     const spot = SPOTS[index];
     lastShot = { frameURL: captureFrame(), shotAt: new Date(), spot };
     chekiURL = null;
-    scr.classList.remp4e('flashing'); void scr.offsetWidth; scr.classList.add('flashing');
+    scr.classList.remove('flashing'); void scr.offsetWidth; scr.classList.add('flashing');
     setTimeout(()=>openPlayer(spot), 280);
 }
 function openPlayer(spot){
@@ -706,15 +737,15 @@ function closePlayer(){
     if(!playerOpen) return;
     playerOpen = false;
     document.getElementById('ytframe').src = '';
-    document.getElementById('player').classList.remp4e('open');
-    openAfterglow(SPOTS[index]);     // 見終わったら、撮ってきたチェキの余韻画面へ
+    document.getElementById('player').classList.remove('open');
+    backToFinder(SPOTS[index]);     // チェキは一旦無効。直接ファインダーへ戻る
 }
 async function openAfterglow(spot){
     const img=document.getElementById('ag-photo');
     const save=document.getElementById('ag-save');
     setXShare('ag-xshare', spot);
     document.getElementById('afterglow').classList.add('open');
-    img.remp4eAttribute('src');
+    img.removeAttribute('src');
     if(lastShot && lastShot.frameURL){
         chekiURL = await buildCheki(spot, lastShot.frameURL, lastShot.shotAt);
     }
@@ -726,7 +757,7 @@ async function openAfterglow(spot){
     }
 }
 function closeAfterglow(){
-    document.getElementById('afterglow').classList.remp4e('open');
+    document.getElementById('afterglow').classList.remove('open');
     backToFinder(SPOTS[index]);
 }
 function backToFinder(spot){
@@ -740,7 +771,7 @@ function backToFinder(spot){
 
 // キー操作：← → スライド / Space シャッター / Esc 閉じる
 window.addEventListener('keydown', e=>{
-    if(document.getElementById('afterglow').classList.contains('open')){ if(e.key==='Escape') closeAfterglow(); return; }
+    if(capOpen) return;   // タイトル（キャップ）表示中は操作を受けない
     if(playerOpen){ if(e.key==='Escape') closePlayer(); return; }
     if(e.key==='ArrowRight') slide(1);
     else if(e.key==='ArrowLeft') slide(-1);
@@ -760,7 +791,7 @@ function ambientExposureDrift(){
     jiggleEV();   // EV針＝明暗も連動
 }
 function ambientTick(){
-    if(!playerOpen && document.visibilityState==='visible'){
+    if(!playerOpen && !capOpen && document.visibilityState==='visible'){
         const r = Math.random();
         if(r < 0.45)      firePresence();          // 波形がふと
         else if(r < 0.80) ambientExposureDrift();  // 露出がふと動く（テスト）
@@ -774,5 +805,6 @@ function scheduleAmbient(){
 }
 scheduleAmbient();
 </script>
-</body>
-</html>
+
+
+</body></html>
