@@ -254,8 +254,10 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
 .ending-active .dot-indicator{ display:none; }
 
 /* スライド時の横移動感（stageを一瞬ずらす） */
-.slidefx{ animation:slideshift .5s cubic-bezier(.3,.8,.4,1); }
-@keyframes slideshift{ 0%{ transform:translateX(6%); filter:blur(2px) } 100%{ transform:translateX(0); filter:blur(0) } }
+.slidefx-right{ animation:slideshift-right .5s cubic-bezier(.3,.8,.4,1); }
+.slidefx-left{ animation:slideshift-left .5s cubic-bezier(.3,.8,.4,1); }
+@keyframes slideshift-right{ 0%{ transform:translateX(6%); filter:blur(2px) } 100%{ transform:translateX(0); filter:blur(0) } }
+@keyframes slideshift-left{ 0%{ transform:translateX(-6%); filter:blur(2px) } 100%{ transform:translateX(0); filter:blur(0) } }
 
 /* ── 操作 ── */
 .controls{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin:14px 0 6px; }
@@ -271,11 +273,13 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
 
 /* ───── エンディング ───── */
 #ending{
-    position:absolute; inset:0; z-index:155; display:none;
+    position:absolute; inset:0; z-index:155;
+    display:flex;
     flex-direction:column; align-items:center; justify-content:center;
     font-family:'Zen Kaku Gothic New',sans-serif; color:#fff; overflow:hidden;
+    visibility:hidden; pointer-events:none;
 }
-#ending.open{ display:flex; }
+#ending.open{ visibility:visible; pointer-events:auto; }
 #endvid{
     position:absolute; inset:0; width:100%; height:100%;
     object-fit:cover; z-index:0;
@@ -554,7 +558,7 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
 
         <!-- エンディング -->
         <div id="ending">
-            <video id="endvid" src="wako_end.mp4" muted playsinline loop autoplay></video>
+            <video id="endvid" src="wako_end.mp4" muted playsinline loop></video>
             <div id="endveil"></div>
             <div id="endfade">
                 <div id="end-complete">ALL MEMORIES CAPTURED</div>
@@ -814,7 +818,7 @@ function randomPresence(){
 }
 
 // 指定インデックスの背景を表示
-function showSpot(i, withFx){
+function showSpot(i, withFx, dir=1){
     clearFx();
     index = i;
     afFiredThisSpot = false;   // 新しい背景：AFはまた1回出せる
@@ -826,7 +830,8 @@ function showSpot(i, withFx){
     document.getElementById('status').textContent = spot.file + (viewed.has(spot.file)?'（CAPTURED）':'');
     updateDots();
 
-    stage.classList.remove('slidefx'); void stage.offsetWidth; stage.classList.add('slidefx');
+    stage.classList.remove('slidefx-right','slidefx-left'); void stage.offsetWidth;
+    stage.classList.add(dir >= 0 ? 'slidefx-right' : 'slidefx-left');
     // スライド時：カメラの反応（露出・EV・検知ログ）。気配は波形を控えめ＋AF/露出は数秒以内に
     if(withFx){
         setTimeout(fireLog, 260);
@@ -860,7 +865,7 @@ function slide(dir){
     if(capOpen || playerOpen) return;
     if(order.length===0) buildOrder();
     orderPos = (orderPos + dir + order.length) % order.length;
-    showSpot(order[orderPos], true);
+    showSpot(order[orderPos], true, dir);
 }
 
 function goFs(){
