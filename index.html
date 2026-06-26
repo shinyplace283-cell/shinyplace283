@@ -1249,7 +1249,8 @@ function closeEndShare(){
 async function buildEndCheki(){
     const endVid = document.getElementById('endvid');
     const canvas = document.getElementById('end-cheki-canvas');
-    const W = 1080, H = 720;
+    const W = endVid.videoWidth  || 1920;
+    const H = endVid.videoHeight || 1080;
     canvas.width = W; canvas.height = H;
     const g = canvas.getContext('2d');
     try{ g.drawImage(endVid, 0, 0, W, H); }
