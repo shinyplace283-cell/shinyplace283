@@ -70,18 +70,20 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
 .item{ display:flex; flex-direction:column; align-items:flex-start; line-height:1.2; }
 .item .lbl{ font-size:0.82cqw; letter-spacing:.2em; color:rgba(255,255,255,.4); }
 .item .val{ font-size:1.18cqw; letter-spacing:.1em; color:rgba(255,255,255,.82); }
+.item.inline{ flex-direction:row; align-items:center; gap:0.3cqw; }
+.item.inline .val{ font-size:0.82cqw; }
 /* AF合焦マーク（写真モード）：通常は薄く、合焦時に白く点灯 */
 .rec{ display:flex; align-items:center; gap:0.7cqw; font-size:1.05cqw; letter-spacing:.18em; color:rgba(255,255,255,.78); }
 .rec .dot{ width:0.8cqw; height:0.8cqw; border-radius:50%; background:rgba(255,255,255,.3); box-shadow:none; transition:background .15s, box-shadow .15s; }
 .focus-on .rec .dot{ background:#fff; box-shadow:0 0 6px rgba(255,255,255,.8); }
 /* 露出補正メーター（目盛り -2/-1/0/+1/+2 ＋ 針） */
-.item.ev{ flex-direction:row; align-items:center; gap:0.7cqw; }
+.item.ev{ flex-direction:row; align-items:center; gap:0.7cqw; margin-left:16px; }
 /* F値：浮動小数一桁（例 8.0）でも幅がガタつかないよう確保 */
-.fval{ display:inline-block; min-width:2.6ch; }
+.fval{ display:inline-block; min-width:2.6ch; margin-left:-1.5px; }
 /* 自前ピクトグラム（測光・AFエリア・手ブレ補正）。ミニマル・著作物不使用 */
 .picto{ display:flex; align-items:center; gap:0.9cqw; color:rgba(255,255,255,.5); }
 .picto svg{ height:1.5cqh; width:auto; display:block; }
-.expmeter{ display:flex; flex-direction:column; gap:0.2cqh; width:13cqw; }
+.expmeter{ display:flex; flex-direction:column; gap:0.2cqh; width:10cqw; }
 .exptrack{ position:relative; height:1.5cqh; }
 .exptrack::before{ content:''; position:absolute; left:0; right:0; top:50%; height:1px; background:rgba(255,255,255,.35); transform:translateY(-50%); }
 .exptrack .tick{ position:absolute; top:50%; transform:translate(-50%,-50%); width:1px; }
@@ -116,8 +118,58 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
 
 /* レンズキャップ：映像（被写体）だけを暗くする層。HUD(z160)より下＝HUDは見えたまま */
 .capdark{ position:absolute; inset:0; z-index:120; background:#000;
-    transition:opacity 1s ease; }
+    transition:opacity 1s ease; display:flex; align-items:center; justify-content:center; }
 .capdark.off{ opacity:0; pointer-events:none; }
+.cap-tutorial{
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    gap:clamp(10px,1.2cqh,16px) 0;
+    align-items:center;
+    opacity:0;
+    padding-bottom:10vh;
+}
+.cap-tutorial.visible{
+    animation: tut-fade 3.2s ease forwards;
+}
+@keyframes tut-fade{
+    0%   { opacity:0; }
+    15%  { opacity:1; }
+    75%  { opacity:1; }
+    100% { opacity:0; }
+}
+.cap-tutorial-title{
+    grid-column:1/-1;
+    text-align:center;
+    font-family:'Zen Kaku Gothic New',sans-serif;
+    font-size:clamp(16px,2.1cqw,22px);
+    letter-spacing:.25em;
+    color:rgba(255,255,255,.92);
+    white-space:nowrap;
+    margin-bottom:20px;
+}
+.cap-tutorial-key{
+    text-align:right;
+    padding-right:20px;
+    font-family:'Space Mono',monospace;
+    font-size:clamp(15px,2cqw,21px);
+    color:rgba(255,255,255,.88);
+    white-space:nowrap;
+}
+.cap-tutorial-sep{
+    text-align:center;
+    font-family:'Space Mono',monospace;
+    font-size:clamp(15px,2cqw,21px);
+    color:rgba(255,255,255,.35);
+    padding:0 4px;
+}
+.cap-tutorial-desc{
+    text-align:left;
+    padding-left:12px;
+    font-family:'Space Mono',monospace;
+    font-size:clamp(15px,2cqw,21px);
+    color:rgba(255,255,255,.88);
+    white-space:nowrap;
+}
 /* タイトルUI：HUDより前面・中央。OKで消える */
 .capui{ position:absolute; inset:0; z-index:215; display:flex; align-items:center; justify-content:center;
     text-align:center; transition:opacity .8s ease; }
@@ -225,8 +277,31 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
 .play-wave .wave i:nth-child(4){animation-delay:.08s}.play-wave .wave i:nth-child(5){animation-delay:.12s}.play-wave .wave i:nth-child(6){animation-delay:.14s}.play-wave .wave i:nth-child(7){animation-delay:.07s}
 
 /* EV針に連動した明暗（−で暗く／＋で明るく・ハッキリめ） */
-.fx-evlum{ position:absolute; inset:0; opacity:0; pointer-events:none; transition:background 1.1s ease, opacity 1.1s ease; }
+.fx-evlum{ position:absolute; inset:0; opacity:0; pointer-events:none; transition:opacity 1.1s ease; z-index:135; }
 #findfade{ position:absolute; inset:0; z-index:150; background:#000; opacity:0; pointer-events:none; transition:opacity 1.5s ease; }
+
+/* 操作ヒント */
+.op-hint{
+    position:absolute;
+    left:calc(100% + 2.8cqw + 14px);
+    top:50%; transform:translateY(-50%);
+    display:grid;
+    grid-template-columns:3.5em 1.2em auto;
+    gap:2px 0;
+    font-family:'Share Tech Mono',monospace;
+    font-size:clamp(8px,0.9cqw,11px);
+    letter-spacing:.1em;
+    color:rgba(255,255,255,.45);
+    line-height:1.5;
+    white-space:nowrap;
+    text-align:left;
+    transition:opacity .6s ease;
+}
+.op-key{ text-align:justify; text-align-last:justify; }
+.op-sep{ text-align:center; color:rgba(255,255,255,.25); }
+.op-desc{ text-align:left; }
+.op-hint.hidden{ opacity:0; pointer-events:none; }
+.capon .op-hint{ display:none; }
 
 /* ドットインジケーター */
 .dot-indicator .di-bracket{
@@ -290,6 +365,7 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
     background:#000; opacity:1;
     pointer-events:none;
     display:flex; align-items:center; justify-content:center;
+    padding-bottom:8vh;
     transition:opacity 1.2s ease;
 }
 #endfade.fadein{ opacity:0; pointer-events:none; }
@@ -416,7 +492,17 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
         <div class="novid">FJ1.mov を読み込み中…<br>表示されない場合は同じフォルダに動画を置いてください</div>
 
         <!-- レンズキャップ：映像（被写体）だけを暗くする層（HUDより下） -->
-        <div class="capdark" id="capdark"></div>
+        <div class="capdark" id="capdark">
+            <div class="cap-tutorial" id="cap-tutorial">
+                <div class="cap-tutorial-title">【操作説明】</div>
+                <span class="cap-tutorial-key">← →</span>
+                <span class="cap-tutorial-sep">:</span>
+                <span class="cap-tutorial-desc">移動する</span>
+                <span class="cap-tutorial-key">スペース</span>
+                <span class="cap-tutorial-sep">:</span>
+                <span class="cap-tutorial-desc">撮影する</span>
+            </div>
+        </div>
 
         <div class="grain"></div>
 
@@ -457,7 +543,7 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
             <div class="bar top">
                 <div class="cluster left">
                     <div class="rec"><span class="dot"></span>AF-S</div>
-                    <div class="item"><span class="lbl">MODE</span><span class="val">A</span></div>
+                    <div class="item inline"><span class="lbl">MODE</span><span class="val">A</span></div>
                     <div class="picto" aria-hidden="true">
                         <!-- 測光モード（評価測光：枠＋格子状の点） -->
                         <svg viewBox="0 0 16 12"><rect x="1.5" y="1.5" width="13" height="9" rx="1.2" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="8" cy="6" r="1.1" fill="currentColor"/><circle cx="4.6" cy="4" r=".5" fill="currentColor"/><circle cx="11.4" cy="4" r=".5" fill="currentColor"/><circle cx="4.6" cy="8" r=".5" fill="currentColor"/><circle cx="11.4" cy="8" r=".5" fill="currentColor"/></svg>
@@ -471,16 +557,16 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
                 <div class="cluster right">
                     <div class="item"><span class="lbl">TIME</span><span class="val" id="clock">--:--</span></div>
                     <div class="batt2"></div>
-                    <div class="item"><span class="lbl">ALBUM</span><span class="val"><span id="album">0</span>/8</span></div>
+                    <div class="item" style="align-items:flex-end;"><span class="lbl">ALBUM</span><span class="val"><span id="album">0</span>/8</span></div>
                 </div>
             </div>
 
             <!-- 下バー：撮影設定値（SS / F / ISO / EV ｜ シャッター ｜ 波形 / WB / FORMAT） -->
             <div class="bar bottom">
                 <div class="cluster left">
-                    <div class="item"><span class="lbl">SS</span><span class="val">1/<span id="ss">283</span></span></div>
+                    <div class="item"><span class="lbl">SS</span><span class="val" style="margin-left:1px">1/<span id="ss">283</span></span></div>
                     <div class="item"><span class="lbl">F</span><span class="val fval">8</span></div>
-                    <div class="item"><span class="lbl">ISO</span><span class="val" id="iso">412</span></div>
+                    <div class="item"><span class="lbl">ISO</span><span class="val" id="iso" style="margin-left:-2px">412</span></div>
                     <div class="item ev"><span class="lbl">EV</span><div class="expmeter">
                         <div class="exptrack">
                             <span class="tick major" style="left:0%"></span><span class="tick minor" style="left:5%"></span>
@@ -503,8 +589,13 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
                     </div></div>
                 </div>
                 <div class="cluster center">
-                    <!-- シャッターボタン（黒帯の中・中央） -->
-                    <button class="shutter" id="shutter" onclick="shoot()" aria-label="シャッター"></button>
+                    <div style="position:relative; display:inline-flex; align-items:center; justify-content:center;">
+                        <button class="shutter" id="shutter" onclick="shoot()" aria-label="シャッター"></button>
+                        <div class="op-hint" id="op-hint">
+                            <span class="op-key">←<span style="margin-left:11px">→</span></span><span class="op-sep">:</span><span class="op-desc">移動する</span>
+                            <span class="op-key">SPACE</span><span class="op-sep">:</span><span class="op-desc">撮影する</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="cluster right">
                     <div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
@@ -529,7 +620,7 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
                 <div class="cap-title">嘘シャニマス聖地合同</div>
                 <div class="cap-sub">シャッターを切って思い出を振り返ろう</div>
                 <button class="cap-ok" onclick="startExperience()">フォトモードを始める</button>
-                <div class="cap-hint">SPACE ／ シャッターで撮影　　←→ でスライド</div>
+
                 <a class="cap-yt" id="cap-yt" href="https://www.youtube.com/" target="_blank" rel="noopener">撮影をやめて YouTube で見る</a>
             </div>
         </div>
@@ -630,9 +721,8 @@ function settleExposure(elId, vals, base, dir, mag){
 }
 
 function nudgeExposure(){
-    // カメラのAE：1つの露出のズレ（向き・段数）を決め、SS・ISO・EVを同じ向きで一緒に動かす
-    const dir = (Math.random()<0.5 ? -1 : 1);   // 暗い側 / 明るい側
-    const mag = 1 + Math.floor(Math.random()*2); // 1〜2段
+    const dir = (Math.random()<0.5 ? -1 : 1);
+    const mag = 1 + Math.floor(Math.random()*2);
     settleExposure('ss',  SS_VALS,  SS_BASE,  dir, mag);
     settleExposure('iso', ISO_VALS, ISO_BASE, dir, mag);
     jiggleEV(dir, mag);
@@ -745,15 +835,15 @@ function jiggleEV(dir, mag){
     const nd=document.getElementById('evneedle'); if(!nd) return;
     const myGen=spinGen;
     if(dir===undefined){ dir = (Math.random()<0.5?-1:1); mag = 1 + Math.floor(Math.random()*2); }
-    const start = 50 + dir * (8 + (mag-1)*9 + Math.random()*4);  // mag1≒8〜12 / mag2≒17〜21
-    nd.style.transition = 'none';           // 振れる瞬間は一瞬で
+    const start = 50 + dir * (8 + (mag-1)*9 + Math.random()*4);
+    nd.style.transition = 'none';
     nd.style.left = start + '%';
     setEVlum(start);
-    void nd.offsetWidth;                    // リフロー後にCSSトランジションを効かせる
+    void nd.offsetWidth;
     nd.style.transition = '';
     const id = setTimeout(()=>{
         if(myGen!==spinGen){ fxTimers.delete(id); return; }
-        nd.style.left = '50%';              // ここからゆっくりゼロへ
+        nd.style.left = '50%';
         setEVlum(50);
         fxTimers.delete(id);
     }, 260);
@@ -763,14 +853,24 @@ function jiggleEV(dir, mag){
 // EV針の位置（%）に応じて画面を明暗（50%=±0、−側で暗く、＋側で明るく・ハッキリめ）
 function setEVlum(leftPct){
     const el=document.getElementById('evlum'); if(!el) return;
-    const ev = (leftPct - 50) / 10;   // 50%=0、40%=-1段、60%=+1段
+    const ev = (leftPct - 50) / 10;
     if(ev < -0.05){
+        // 暗い側：先にbackgroundを黒に確定してからopacityを上げる
+        el.style.transition = 'none';
         el.style.background = '#000';
-        el.style.opacity = Math.min(0.5, Math.abs(ev)*0.32).toFixed(3);   // 暗く（ハッキリ）
+        el.style.opacity = 0;
+        void el.offsetWidth;
+        el.style.transition = 'opacity 1.1s ease';
+        el.style.opacity = Math.min(0.5, Math.abs(ev)*0.32).toFixed(3);
     }else if(ev > 0.05){
+        el.style.transition = 'none';
         el.style.background = '#fff';
-        el.style.opacity = Math.min(0.4, ev*0.24).toFixed(3);            // 明るく（ハッキリ）
+        el.style.opacity = 0;
+        void el.offsetWidth;
+        el.style.transition = 'opacity 1.1s ease';
+        el.style.opacity = Math.min(0.4, ev*0.24).toFixed(3);
     }else{
+        el.style.transition = 'opacity 1.1s ease';
         el.style.opacity = 0;
     }
 }
@@ -818,13 +918,22 @@ function randomPresence(){
 }
 
 // 指定インデックスの背景を表示
+const firstLoaded = new Set(); // 各スポットの初回読み込み完了を記録
 function showSpot(i, withFx, dir=1){
     clearFx();
     index = i;
-    afFiredThisSpot = false;   // 新しい背景：AFはまた1回出せる
+    afFiredThisSpot = false;
     const spot = SPOTS[index];
     PERSON = spot.persons[0];
-    if(vid.getAttribute('src')!==spot.file){ vid.src=spot.file; vid.load(); vid.play().catch(()=>{}); }
+    const isFirstLoad = !firstLoaded.has(spot.file);
+    if(vid.getAttribute('src')!==spot.file){
+        vid.src=spot.file; vid.load(); vid.play().catch(()=>{});
+        if(isFirstLoad){
+            vid.addEventListener('loadeddata', ()=>{
+                firstLoaded.add(spot.file);
+            }, { once:true });
+        }
+    }
     // CAPTURED 印
     scr.classList.toggle('captured', viewed.has(spot.file));
     document.getElementById('status').textContent = spot.file + (viewed.has(spot.file)?'（CAPTURED）':'');
@@ -832,26 +941,27 @@ function showSpot(i, withFx, dir=1){
 
     stage.classList.remove('slidefx-right','slidefx-left'); void stage.offsetWidth;
     stage.classList.add(dir >= 0 ? 'slidefx-right' : 'slidefx-left');
-    // スライド時：カメラの反応（露出・EV・検知ログ）。気配は波形を控えめ＋AF/露出は数秒以内に
+    // スライド時：カメラの反応（露出・EV・検知ログ）
     if(withFx){
-        setTimeout(fireLog, 260);
-        // 波形（B）：スライド直後に控えめな確率で
+        const delay = isFirstLoad ? 1500 : 0;
+        setTimeout(fireLog, 0); // 検知ログは即時
+        // 波形（B）
         if(Math.random()<0.4){
             const id=setTimeout(()=>{ if(!playerOpen) fire('play-wave', POOL['play-wave']); fxTimers.delete(id); }, 300+Math.random()*400);
             fxTimers.add(id);
         }
-        // AF：この背景で出るなら2〜7秒以内に（確率低め＝スライド時のAFを抑制）
+        // AF
         if(Math.random()<0.4 && !afFiredThisSpot){
-            const t = 2000 + Math.random()*5000;   // 2〜7秒
+            const t = delay + 2000 + Math.random()*5000;
             const id=setTimeout(()=>{
                 if(!afFiredThisSpot && !playerOpen){ fire('play-af', POOL['play-af']); afFiredThisSpot = true; }
                 fxTimers.delete(id);
             }, t);
             fxTimers.add(id);
         }
-        // 露出（カメラのAE）：55%で出ると決め、出すならスライドのその場で（SS・ISO・EVが連動）
+        // 露出（初回のみ遅延）
         if(!capOpen && Math.random()<0.55 && !playerOpen){
-            nudgeExposure();
+            setTimeout(()=>{ nudgeExposure(); }, delay);
         }
     }
 }
@@ -862,7 +972,7 @@ function firePresence(){
 }
 
 function slide(dir){
-    if(capOpen || playerOpen) return;
+    if(capOpen || playerOpen || endingOpen) return;
     if(order.length===0) buildOrder();
     orderPos = (orderPos + dir + order.length) % order.length;
     showSpot(order[orderPos], true, dir);
@@ -879,22 +989,26 @@ function setLogPos(p){ /* 検知ログは右下で確定済み */ }
 let playerOpen = false;
 let capOpen = true;          // タイトル（レンズキャップ）表示中
 let shutterLock = false;     // 開始直後の誤シャッター防止
+let tutorialActive = false;  // 操作説明表示中
 // OKボタン：レンズキャップを外して体験開始。被写体が暗→明、準備でき次第AF＋検知ログ
 function startExperience(){
     if(!capOpen) return;
     capOpen = false;
-    shutterLock = true;                       // 開始のSpaceがそのまま撮影に流れるのを防ぐ
-    setTimeout(()=>{ shutterLock = false; }, 500);
-    scr.classList.remove('capon');            // 中央マーカー復活・シャッター有効化
+    shutterLock = true;
     const dark = document.getElementById('capdark');
     const ui   = document.getElementById('capui');
-    ui.classList.add('off');                  // タイトル文字を消す
-    dark.classList.add('off');                // 被写体が暗→明（B案フェード）
-    setTimeout(()=>{ dark.style.display='none'; ui.style.display='none'; }, 1100);
+    ui.classList.add('off');
+
+    // 暗転を明ける（1s後）
+    setTimeout(()=>{
+        shutterLock = false;
+        scr.classList.remove('capon');
+        dark.classList.add('off');
+        setTimeout(()=>{ dark.style.display='none'; ui.style.display='none'; }, 1100);
+        fireFirstPresence();
+    }, 1000);
+
     try{ vid.play(); }catch(e){}
-    // 動画が実際に再生できる状態になってから、最初のAF＋検知ログを出す
-    // （1周目の読み込み待ちでも、待ち時間ぶん自動で調整される）
-    fireFirstPresence();
 }
 // 起動時の最初の気配：動画がcanplay（再生可能）になり次第、AF＋検知ログを1回だけ
 function fireFirstPresence(){
@@ -911,7 +1025,7 @@ function fireFirstPresence(){
         setTimeout(go, 6000);           // 念のための上限（極端な遅延時のフォールバック）
     }
 }
-let lastShot = null;          // { frameURL, shotAt, spot } 撮影した瞬間
+let shootCount = 0; // シャッター回数カウント（2回で操作ヒントを消す）
 let chekiURL = null;          // 生成したチェキ画像
 
 // 背景動画の現フレームを画像化（素材。これをチェキに合成する）
@@ -988,6 +1102,12 @@ function shoot(){
     lastShot = { frameURL: captureFrame(), shotAt: new Date(), spot };
     chekiURL = null;
     scr.classList.remove('flashing'); void scr.offsetWidth; scr.classList.add('flashing');
+    // シャッター2回でヒントを消す
+    shootCount++;
+    if(shootCount >= 2){
+        const hint = document.getElementById('op-hint');
+        if(hint) hint.classList.add('hidden');
+    }
     setTimeout(()=>openPlayer(spot), 280);
 }
 function openPlayer(spot){
