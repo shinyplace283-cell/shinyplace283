@@ -1055,7 +1055,7 @@ function buildCheki(spot, frameURL, shotAt){
     return new Promise(resolve=>{
         const pad = 32;
         const imgW = 1280, imgH = Math.round(imgW * 9 / 16);
-        const W = imgW + pad * 2, H = imgH + pad * 2 + 48;
+        const W = imgW + pad * 2, H = imgH + pad * 2 + 96;
         const c = document.createElement('canvas'); c.width = W; c.height = H;
         const g = c.getContext('2d');
 
@@ -1082,6 +1082,23 @@ function buildCheki(spot, frameURL, shotAt){
             g.shadowBlur = 6;
             g.fillText(date, pad + imgW - 12, pad + imgH - 12);
             g.shadowBlur = 0;
+
+            // 作品名（中央）
+            g.textAlign = 'center';
+            g.font = "500 28px 'Zen Kaku Gothic New', sans-serif";
+            g.fillStyle = '#2b2b2b';
+            g.fillText(`『${spot.title}』`, W / 2, pad + imgH + 42);
+
+            // アイドル名（中央）
+            g.font = "400 22px 'Zen Kaku Gothic New', sans-serif";
+            g.fillStyle = '#444444';
+            g.fillText(spot.rep, W / 2, pad + imgH + 76);
+
+            // 作者名（右寄せ）
+            g.textAlign = 'right';
+            g.font = "400 18px 'Zen Kaku Gothic New', sans-serif";
+            g.fillStyle = '#888888';
+            g.fillText(`作者：${spot.author}`, W - pad - 8, pad + imgH + 76);
 
             resolve(c.toDataURL('image/jpeg', 0.92));
         };
