@@ -219,14 +219,16 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
 .player .credit-title{ font-size:2.1cqh; color:#fff; letter-spacing:.06em; }
 .player .credit-author{ font-size:1.5cqh; color:rgba(255,255,255,.6); letter-spacing:.1em; }
 .player .pnote{ font-family:'Zen Kaku Gothic New',sans-serif; font-size:1.2cqh; color:rgba(255,255,255,.45); text-align:center; max-width:80%; line-height:1.6; }
-.player .pbtns{ display:flex; gap:2cqw; align-items:center; justify-content:center; width:100%; }
-.player .pyt, .player .pclose{ font-family:'Share Tech Mono',monospace; font-size:1.5cqh; letter-spacing:.1em;
+.player .pbtns, .afterglow .pbtns{ display:flex; gap:2cqw; align-items:center; justify-content:center; width:100%; }
+.player .pyt, .player .pclose,
+.afterglow .pyt, .afterglow .pclose{ font-family:'Share Tech Mono',monospace; font-size:1.5cqh; letter-spacing:.1em;
     color:rgba(255,255,255,.85); background:none; border:1px solid rgba(255,255,255,.4); border-radius:3px;
     padding:0.9cqh 2.2cqw; cursor:pointer; pointer-events:auto; transition:.2s; text-decoration:none;
     min-width:14cqw; text-align:center; }
-.player .pyt:hover, .player .pclose:hover{ border-color:#fff; background:rgba(255,255,255,.08); }
-.player .pxshare{ border-color:rgba(255,255,255,.7); }
-.player .pxshare:hover{ background:rgba(255,255,255,.14); }
+.player .pyt:hover, .player .pclose:hover,
+.afterglow .pyt:hover, .afterglow .pclose:hover{ border-color:#fff; background:rgba(255,255,255,.08); }
+.player .pxshare, .afterglow .pxshare{ border-color:rgba(255,255,255,.7); }
+.player .pxshare:hover, .afterglow .pxshare:hover{ background:rgba(255,255,255,.14); }
 /* 検知ログ（常時：点滅→定着）：映像エリア右下 */
 .log{ position:absolute; right:2.6cqw; font-size:1.35cqw; letter-spacing:.12em; line-height:1.7; text-align:right; opacity:0; }
 .logpos-bottom .log{ bottom:15%; }
@@ -630,7 +632,7 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
             <div class="frame"><iframe id="ytframe" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>
             <div class="credit"><span class="credit-title" id="credit-title">タイトル</span><span class="credit-author" id="credit-author">制作者</span></div>
             <div class="pbtns">
-                <a class="pyt pxshare" id="xshare" href="#" target="_blank" rel="noopener">思い出を共有する</a>
+                <button class="pyt pxshare" onclick="closePlayerToAfterglow()">思い出を共有する</button>
                 <button class="pclose" onclick="closePlayer()">× 撮影に戻る</button>
             </div>
             <p class="pnote"><a class="cap-yt" href="https://www.youtube.com/" target="_blank" rel="noopener">YouTube でまとめて見る</a></p>
@@ -640,9 +642,9 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
         <div class="afterglow" id="afterglow">
             <img id="ag-photo" class="ag-photo" alt="撮影したチェキ">
             <div class="pbtns">
-                <a class="pyt pxshare" id="ag-xshare" href="#" target="_blank" rel="noopener">思い出を共有する</a>
-                <a class="pyt" id="ag-save" href="#" download>⬇ チェキを保存</a>
-                <button class="pclose" onclick="closeAfterglow()">× 撮影に戻る</button>
+                <a class="pyt pxshare" id="ag-xshare" href="#" target="_blank" rel="noopener">X を開く</a>
+                <a class="pyt" id="ag-save" href="#" download>画像を保存する</a>
+                <button class="pclose" onclick="closeAfterglow()">← 撮影に戻る</button>
             </div>
             <p class="pnote">Xは画像を自動添付できないため、「チェキを保存」してから投稿に添付してください。</p>
         </div>
@@ -972,7 +974,7 @@ function firePresence(){
 }
 
 function slide(dir){
-    if(capOpen || playerOpen || endingOpen) return;
+    if(capOpen || playerOpen || afterglowOpen || endingOpen) return;
     if(order.length===0) buildOrder();
     orderPos = (orderPos + dir + order.length) % order.length;
     showSpot(order[orderPos], true, dir);
@@ -987,6 +989,7 @@ function setLogPos(p){ /* 検知ログは右下で確定済み */ }
 
 // ───── シャッター → コミュ再生 ─────
 let playerOpen = false;
+let afterglowOpen = false;
 let capOpen = true;          // タイトル（レンズキャップ）表示中
 let shutterLock = false;     // 開始直後の誤シャッター防止
 let tutorialActive = false;  // 操作説明表示中
@@ -1047,41 +1050,41 @@ function fitFont(g, text, family, maxPx, maxW){
     do{ g.font=`${px}px ${family}`; if(g.measureText(text).width<=maxW) break; px-=2; }while(px>16);
     return px;
 }
-// チェキ画像を生成（白フチ・上に写真・下に手書き風＋活字）
+// チェキ画像を生成（16:9写真＋下テキスト帯）
 function buildCheki(spot, frameURL, shotAt){
     return new Promise(resolve=>{
-        const W=720, H=1146, bx=53, ty=70;
-        const pw=W-bx*2, ph=Math.round(pw*62/46);
+        const side=32, top=32, bot=140;
+        const imgW=1280, imgH=Math.round(imgW*9/16);
+        const W=imgW+side*2, H=imgH+top+bot;
         const c=document.createElement('canvas'); c.width=W; c.height=H;
         const g=c.getContext('2d');
+        // 全体白
         g.fillStyle='#f7f5f0'; g.fillRect(0,0,W,H);
         const img=new Image();
         img.onload=async ()=>{
-            const ir=img.width/img.height, tr=pw/ph;
+            // 16:9にクロップして描画（四辺白帯の内側）
+            const ir=img.width/img.height, tr=imgW/imgH;
             let sx,sy,sw,sh;
             if(ir>tr){ sh=img.height; sw=sh*tr; sx=(img.width-sw)/2; sy=0; }
             else { sw=img.width; sh=sw/tr; sx=0; sy=(img.height-sh)/2; }
-            g.drawImage(img, sx,sy,sw,sh, bx,ty,pw,ph);
-            g.strokeStyle='rgba(0,0,0,.10)'; g.lineWidth=1; g.strokeRect(bx+.5,ty+.5,pw-1,ph-1);
+            g.drawImage(img, sx,sy,sw,sh, side,top,imgW,imgH);
             try{ await document.fonts.ready; }catch(e){}
-            const tx=bx+8, tw=pw-16;
-            // 作品名（手書き風）
+            const bx=side+8, by=top+imgH, tw=W-side*2-16;
+            // 作品名（手書き風・左）
             g.textAlign='left'; g.fillStyle='#2b2b2b';
             const ttl=`『${spot.title}』`;
-            const tpx=fitFont(g, ttl, "'Yomogi', sans-serif", 44, tw);
+            const tpx=fitFont(g, ttl, "'Yomogi', sans-serif", 36, tw*0.6);
             g.font=`${tpx}px 'Yomogi', sans-serif`;
-            g.fillText(ttl, tx, ty+ph+64);
-            // アイドル名・作者（活字・控えめ）
-            g.fillStyle='#6b6b6b'; g.font="26px 'Zen Kaku Gothic New', sans-serif";
-            g.fillText(spot.rep, tx, ty+ph+110);
-            g.fillStyle='#8a8a8a'; g.font="22px 'Zen Kaku Gothic New', sans-serif";
-            g.fillText(`作者：${spot.author}`, tx, ty+ph+144);
-            // 日時（右上・等幅）
-            g.textAlign='right'; g.fillStyle='#9a9a9a'; g.font="22px 'Share Tech Mono', monospace";
-            g.fillText(fmtDate(shotAt), W-bx-8, ty+ph+64);
-            // 企画名（最下部・小さく）
-            g.textAlign='left'; g.fillStyle='#bdb2b2'; g.font="19px 'Zen Kaku Gothic New', sans-serif";
-            g.fillText('嘘シャニマス合同／パフェコミ', tx, H-28);
+            g.fillText(ttl, bx, by+44);
+            // アイドル名・作者
+            g.fillStyle='#6b6b6b'; g.font="22px 'Zen Kaku Gothic New', sans-serif";
+            g.fillText(`${spot.rep}　作者：${spot.author}`, bx, by+80);
+            // 日時（右上）
+            g.textAlign='right'; g.fillStyle='#9a9a9a'; g.font="18px 'Share Tech Mono', monospace";
+            g.fillText(fmtDate(shotAt), W-side-8, by+44);
+            // 企画名（右下）
+            g.fillStyle='#aaaaaa'; g.font="17px 'Zen Kaku Gothic New', sans-serif";
+            g.fillText('嘘シャニマス聖地合同 / パフェコミ', W-side-8, by+116);
             resolve(c.toDataURL('image/jpeg', 0.92));
         };
         img.onerror=()=>resolve(null);
@@ -1097,7 +1100,7 @@ function setXShare(elId, spot){
 }
 
 function shoot(){
-    if(playerOpen || capOpen || shutterLock) return;
+    if(playerOpen || afterglowOpen || capOpen || shutterLock) return;
     const spot = SPOTS[index];
     lastShot = { frameURL: captureFrame(), shotAt: new Date(), spot };
     chekiURL = null;
@@ -1115,7 +1118,6 @@ function openPlayer(spot){
     const f = document.getElementById('ytframe');
     const origin = encodeURIComponent(location.origin && location.origin!=='null' ? location.origin : location.href.split('#')[0]);
     f.src = `https://www.youtube-nocookie.com/embed/${spot.ytid}?autoplay=1&rel=0&playsinline=1&origin=${origin}`;
-    setXShare('xshare', spot);
     document.getElementById('credit-title').textContent = `『${spot.title}』`;
     document.getElementById('credit-author').textContent = spot.author;
     document.getElementById('player').classList.add('open');
@@ -1127,9 +1129,17 @@ function closePlayer(){
     playerOpen = false;
     document.getElementById('ytframe').src = '';
     document.getElementById('player').classList.remove('open');
-    backToFinder(SPOTS[index]);     // チェキは一旦無効。直接ファインダーへ戻る
+    backToFinder(SPOTS[index]);
+}
+function closePlayerToAfterglow(){
+    if(!playerOpen) return;
+    playerOpen = false;
+    document.getElementById('ytframe').src = '';
+    document.getElementById('player').classList.remove('open');
+    openAfterglow(SPOTS[index]);
 }
 async function openAfterglow(spot){
+    afterglowOpen = true;
     const img=document.getElementById('ag-photo');
     const save=document.getElementById('ag-save');
     setXShare('ag-xshare', spot);
@@ -1146,6 +1156,7 @@ async function openAfterglow(spot){
     }
 }
 function closeAfterglow(){
+    afterglowOpen = false;
     document.getElementById('afterglow').classList.remove('open');
     backToFinder(SPOTS[index]);
 }
@@ -1292,7 +1303,8 @@ window.addEventListener('keydown', e=>{
         if(e.code==='Space' || e.key==='Enter'){ e.preventDefault(); startExperience(); }
         return;
     }
-    if(endingOpen){ return; } // エンディング中はキー操作無効
+    if(endingOpen){ return; }
+    if(afterglowOpen){ if(e.key==='Escape') closeAfterglow(); return; }
     if(playerOpen){ if(e.key==='Escape') closePlayer(); return; }
     if(e.key==='ArrowRight') slide(1);
     else if(e.key==='ArrowLeft') slide(-1);
