@@ -1085,20 +1085,27 @@ function buildCheki(spot, frameURL, shotAt){
 
             // 作品名（中央）
             g.textAlign = 'center';
-            g.font = "500 28px 'Zen Kaku Gothic New', sans-serif";
+            g.font = "24px 'Shippori Antique', sans-serif";
             g.fillStyle = '#2b2b2b';
-            g.fillText(`『${spot.title}』`, W / 2, pad + imgH + 42);
+            g.fillText(`『${spot.title}』`, W / 2, pad + imgH + 44);
 
-            // アイドル名（中央）
-            g.font = "400 22px 'Zen Kaku Gothic New', sans-serif";
-            g.fillStyle = '#444444';
-            g.fillText(spot.rep, W / 2, pad + imgH + 76);
-
-            // 作者名（右寄せ）
-            g.textAlign = 'right';
-            g.font = "400 18px 'Zen Kaku Gothic New', sans-serif";
-            g.fillStyle = '#888888';
-            g.fillText(`作者：${spot.author}`, W - pad - 8, pad + imgH + 76);
+            // アイドル名 + （作者：○○）横並び中央寄せ
+            g.font = "18px 'Shippori Antique', sans-serif";
+            g.fillStyle = '#777777';
+            const idolW = g.measureText(spot.rep).width;
+            const authorText = `（作者：${spot.author}）`;
+            g.font = "14px 'Shippori Antique', sans-serif";
+            const authorW = g.measureText(authorText).width;
+            const gap = 8;
+            const totalW = idolW + gap + authorW;
+            const startX = W / 2 - totalW / 2;
+            g.textAlign = 'left';
+            g.font = "18px 'Shippori Antique', sans-serif";
+            g.fillStyle = '#777777';
+            g.fillText(spot.rep, startX, pad + imgH + 76);
+            g.font = "14px 'Shippori Antique', sans-serif";
+            g.fillStyle = '#aaaaaa';
+            g.fillText(authorText, startX + idolW + gap, pad + imgH + 76);
 
             resolve(c.toDataURL('image/jpeg', 0.92));
         };
