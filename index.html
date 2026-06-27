@@ -646,7 +646,7 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
                 <a class="pyt" id="ag-save" href="#" download>画像を保存する</a>
                 <button class="pclose" onclick="closeAfterglow()">← 撮影に戻る</button>
             </div>
-            <p class="pnote">Xは画像を自動添付できないため、「チェキを保存」してから投稿に添付してください。</p>
+
         </div>
 
         <!-- エンディング -->
@@ -1053,48 +1053,46 @@ function fitFont(g, text, family, maxPx, maxW){
 // チェキ画像を生成（16:9写真＋下テキスト帯）
 function buildCheki(spot, frameURL, shotAt){
     return new Promise(resolve=>{
-        const side=32, top=32, bot=140;
-        const imgW=1280, imgH=Math.round(imgW*9/16);
-        const W=imgW+side*2, H=imgH+top+bot;
-        const c=document.createElement('canvas'); c.width=W; c.height=H;
-        const g=c.getContext('2d');
-        // 全体白
-        g.fillStyle='#f7f5f0'; g.fillRect(0,0,W,H);
-        const img=new Image();
-        img.onload=async ()=>{
-            // 16:9にクロップして描画（四辺白帯の内側）
-            const ir=img.width/img.height, tr=imgW/imgH;
-            let sx,sy,sw,sh;
-            if(ir>tr){ sh=img.height; sw=sh*tr; sx=(img.width-sw)/2; sy=0; }
-            else { sw=img.width; sh=sw/tr; sx=0; sy=(img.height-sh)/2; }
-            g.drawImage(img, sx,sy,sw,sh, side,top,imgW,imgH);
+        const pad = 32;
+        const imgW = 1280, imgH = Math.round(imgW * 9 / 16);
+        const W = imgW + pad * 2, H = imgH + pad * 2 + 48;
+        const c = document.createElement('canvas'); c.width = W; c.height = H;
+        const g = c.getContext('2d');
+
+        // 背景白
+        g.fillStyle = '#ffffff'; g.fillRect(0, 0, W, H);
+
+        const img = new Image();
+        img.onload = async () => {
+            // 写真を四辺白帯の内側に描画
+            const ir = img.width / img.height, tr = imgW / imgH;
+            let sx, sy, sw, sh;
+            if(ir > tr){ sh = img.height; sw = sh * tr; sx = (img.width - sw) / 2; sy = 0; }
+            else { sw = img.width; sh = sw / tr; sx = 0; sy = (img.height - sh) / 2; }
+            g.drawImage(img, sx, sy, sw, sh, pad, pad, imgW, imgH);
+
             try{ await document.fonts.ready; }catch(e){}
-            const bx=side+8, by=top+imgH, tw=W-side*2-16;
-            // 作品名（手書き風・左）
-            g.textAlign='left'; g.fillStyle='#2b2b2b';
-            const ttl=`『${spot.title}』`;
-            const tpx=fitFont(g, ttl, "'Yomogi', sans-serif", 36, tw*0.6);
-            g.font=`${tpx}px 'Yomogi', sans-serif`;
-            g.fillText(ttl, bx, by+44);
-            // アイドル名・作者
-            g.fillStyle='#6b6b6b'; g.font="22px 'Zen Kaku Gothic New', sans-serif";
-            g.fillText(`${spot.rep}　作者：${spot.author}`, bx, by+80);
-            // 日時（右上）
-            g.textAlign='right'; g.fillStyle='#9a9a9a'; g.font="18px 'Share Tech Mono', monospace";
-            g.fillText(fmtDate(shotAt), W-side-8, by+44);
-            // 企画名（右下）
-            g.fillStyle='#aaaaaa'; g.font="17px 'Zen Kaku Gothic New', sans-serif";
-            g.fillText('嘘シャニマス聖地合同 / パフェコミ', W-side-8, by+116);
+
+            // 日付（写真右下・焼き込み）
+            const date = `${shotAt.getFullYear()}.${String(shotAt.getMonth()+1).padStart(2,'0')}.${String(shotAt.getDate()).padStart(2,'0')}`;
+            g.textAlign = 'right';
+            g.font = "28px 'Share Tech Mono', monospace";
+            g.fillStyle = 'rgba(255,200,80,.9)';
+            g.shadowColor = 'rgba(0,0,0,.8)';
+            g.shadowBlur = 6;
+            g.fillText(date, pad + imgW - 12, pad + imgH - 12);
+            g.shadowBlur = 0;
+
             resolve(c.toDataURL('image/jpeg', 0.92));
         };
-        img.onerror=()=>resolve(null);
-        img.src=frameURL;
+        img.onerror = () => resolve(null);
+        img.src = frameURL;
     });
 }
 
 function setXShare(elId, spot){
     const authorPart = spot.handle ? `${spot.author} ${spot.handle}` : spot.author;
-    const shareText = `${spot.rep}との思い出を振り返ったよ！（作者：${authorPart}）\n${SHARE_TAG}`;
+    const shareText = `${spot.rep}との思い出を振り返ったよ！（作者：${authorPart}）\n\n${SHARE_TAG}`;
     document.getElementById(elId).href =
         `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(SITE_URL)}`;
 }
@@ -1150,9 +1148,12 @@ async function openAfterglow(spot){
     }
     if(chekiURL){
         img.src=chekiURL; img.style.display='';
-        save.href=chekiURL; save.download=`${spot.rep}_${spot.file.replace(/\.[^.]+$/,'')}_cheki.jpg`; save.style.display='';
+        save.href=chekiURL;
+        save.download = `${spot.rep}_memory.jpg`;
+        save.style.display='';
     }else{
-        img.style.display='none'; save.style.display='none';
+        img.style.display='none';
+        save.style.display='none';
     }
 }
 function closeAfterglow(){
@@ -1212,7 +1213,7 @@ function openEnding(){
     endVid.play().catch(()=>{});
 
     // X共有文
-    const shareText = `全コミュを巡ってきた！\n${SHARE_TAG}`;
+    const shareText = `すべての思い出を振り返ったよ！\n${SHARE_TAG}`;
     document.getElementById('end-cheki-x').href =
         `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(SITE_URL)}`;
 
