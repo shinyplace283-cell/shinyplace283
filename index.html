@@ -1042,7 +1042,7 @@ function startExperience(){
 function fireFirstPresence(){
     let done = false;
     const go = ()=>{
-        if(done || playerOpen) return; done = true;
+        if(done || playerOpen || capOpen) return; done = true;
         if(!afFiredThisSpot){ fire('play-af', POOL['play-af']); afFiredThisSpot = true; }
         fireLog();
     };
