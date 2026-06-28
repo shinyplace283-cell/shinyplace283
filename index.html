@@ -778,21 +778,21 @@ const LOGMSG = [
 // ★ 全コミュデータ（CSVより）。persons は最大2人＝検知ログに2行表示
 // rep=共有文面の代表アイドル / handle=作者のXアカウント（@、後で記入）
 const SPOTS = [
-    { file:'FJ1.mov',   ytid:'0e7q_znhh38', author:'FJオクト', title:'紅茶時間', rep:'七草にちか', handle:'',
+    { file:'FJ1.mov',   ytid:'0e7q_znhh38', author:'FJオクト', title:'紅茶時間', rep:'七草にちか', handle:'@FJ02653401', xurl:'https://x.com/FJ02653401',
       persons:[{name:'七草にちか',color:'#a6cdb6'},{name:'緋田美琴',color:'#760f10'}] },
-    { file:'J@Q1.mov',   ytid:'Eg_CZoubROs', author:'J@Q', title:'ビッグに', rep:'七草にちか', handle:'',
+    { file:'J@Q1.mov',   ytid:'Eg_CZoubROs', author:'J@Q', title:'ビッグに', rep:'七草にちか', handle:'@JP_SOSA236', xurl:'https://x.com/JP_SOSA236',
       persons:[{name:'七草にちか',color:'#a6cdb6'}] },
-    { file:'nabe1.mov', ytid:'WAOYHb0y3uw', author:'無駄にデカい鍋敷き', title:'Nさん', rep:'福丸小糸', handle:'',
+    { file:'nabe1.mov', ytid:'WAOYHb0y3uw', author:'無駄にデカい鍋敷き', title:'Nさん', rep:'福丸小糸', handle:'@toobigrug', xurl:'https://x.com/toobigrug',
       persons:[{name:'福丸小糸',color:'#7967c3'},{name:'UNKNOWN:N',color:'#ffffff'}] },
-    { file:'nabe2.mov', ytid:'-vJ6bqCXpeg', author:'無駄にデカい鍋敷き', title:'どこから春が', rep:'桑山千雪', handle:'',
+    { file:'nabe2.mov', ytid:'-vJ6bqCXpeg', author:'無駄にデカい鍋敷き', title:'どこから春が', rep:'桑山千雪', handle:'@toobigrug', xurl:'https://x.com/toobigrug',
       persons:[{name:'桑山千雪',color:'#fafafa'}] },
-    { file:'wako1.mov', ytid:'LMlPdnIar-Y', author:'わこー', title:'他人の瞳は異世界の窓', rep:'櫻木真乃', handle:'',
+    { file:'wako1.mov', ytid:'LMlPdnIar-Y', author:'わこー', title:'他人の瞳は異世界の窓', rep:'櫻木真乃', handle:'@urata_wako', xurl:'https://x.com/urata_wako',
       persons:[{name:'櫻木真乃',color:'#ffbad6'},{name:'UNKNOWN',color:'#ffffff'}] },
-    { file:'wako2.mov', ytid:'-kbS5f1QrMA', author:'わこー', title:'境界域', rep:'浅倉透', handle:'',
+    { file:'wako2.mov', ytid:'-kbS5f1QrMA', author:'わこー', title:'境界域', rep:'浅倉透', handle:'@urata_wako', xurl:'https://x.com/urata_wako',
       persons:[{name:'浅倉透',color:'#50d0d0'},{name:'樋口円香',color:'#be1e3e'}] },
-    { file:'wako3.mov', ytid:'7VSbOnmi5HE', author:'わこー', title:'水曜日のアップダウン4月15日放送回', rep:'七草にちか', handle:'',
+    { file:'wako3.mov', ytid:'7VSbOnmi5HE', author:'わこー', title:'水曜日のアップダウン4月15日放送回', rep:'七草にちか', handle:'@urata_wako', xurl:'https://x.com/urata_wako',
       persons:[{name:'七草にちか',color:'#a6cdb6'},{name:'OTHERS:7',color:'#ffffff'}] },
-    { file:'duka1.mov', ytid:'u01QXRr_2Io', author:'ヅカマゲドン', title:'Vlogはじめました', rep:'芹沢あさひ', handle:'',
+    { file:'duka1.mov', ytid:'u01QXRr_2Io', author:'ヅカマゲドン', title:'Vlogはじめました', rep:'芹沢あさひ', handle:'', xurl:'',
       persons:[{name:'芹沢あさひ',color:'#f30100'}] },
 ];
 // 共有リンク（サイトのURL。後で正式URLに差し替え）
@@ -1116,9 +1116,9 @@ function buildCheki(spot, frameURL, shotAt){
 
 function setXShare(elId, spot){
     const authorPart = spot.handle ? `${spot.author} ${spot.handle}` : spot.author;
-    const shareText = `${spot.rep}との思い出を振り返ったよ！（作者：${authorPart}）\n\n${SHARE_TAG}`;
+    const shareText = `${spot.rep}との思い出を振り返ったよ！（作者：${authorPart}）\n\n${SHARE_TAG}\n${SITE_URL}`;
     document.getElementById(elId).href =
-        `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(SITE_URL)}`;
+        `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
 }
 
 function shoot(){
@@ -1143,7 +1143,12 @@ function openPlayer(spot){
     const origin = encodeURIComponent(location.origin && location.origin!=='null' ? location.origin : location.href.split('#')[0]);
     f.src = `https://www.youtube-nocookie.com/embed/${spot.ytid}?autoplay=1&rel=0&playsinline=1&origin=${origin}`;
     document.getElementById('credit-title').textContent = `『${spot.title}』`;
-    document.getElementById('credit-author').textContent = spot.author;
+    const authorEl = document.getElementById('credit-author');
+    if(spot.xurl){
+        authorEl.innerHTML = `<a href="${spot.xurl}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.3);">${spot.author}</a>`;
+    } else {
+        authorEl.textContent = spot.author;
+    }
     document.getElementById('player').classList.add('open');
     try{ vid.pause(); }catch(e){}
     markViewed(spot.file);
@@ -1239,9 +1244,9 @@ function openEnding(){
     endVid.play().catch(()=>{});
 
     // X共有文
-    const shareText = `すべての思い出を振り返ったよ！\n${SHARE_TAG}`;
+    const shareText = `すべての思い出を振り返ったよ！\n\n${SHARE_TAG}\n${SITE_URL}`;
     document.getElementById('end-cheki-x').href =
-        `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(SITE_URL)}`;
+        `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
 
     // ① テキスト表示（300ms後）
     setTimeout(()=>{ complete.classList.add('visible'); }, 300);
