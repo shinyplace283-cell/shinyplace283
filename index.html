@@ -944,17 +944,7 @@ function showSpot(i, withFx, dir=1){
     stage.classList.add(dir >= 0 ? 'slidefx-right' : 'slidefx-left');
     // スライド時：カメラの反応（露出・EV・検知ログ）
     if(withFx){
-        const delay = isFirstLoad ? 1500 : 0;
-        // 検知ログ：初回はloadeddataを待ってから、2回目以降は即時
-        if(isFirstLoad){
-            let logFired = false;
-            const fireLogOnce = ()=>{ if(!logFired){ logFired=true; setTimeout(fireLog, 260); } };
-            vid.addEventListener('loadeddata', fireLogOnce, { once:true });
-            // キャッシュ効いてる場合はreadyState>=2ですでに準備完了
-            if(vid.readyState >= 2){ fireLogOnce(); }
-        } else {
-            setTimeout(fireLog, 0);
-        }
+        setTimeout(fireLog, 260);
         // 波形（B）
         if(Math.random()<0.4){
             const id=setTimeout(()=>{ if(!playerOpen) fire('play-wave', POOL['play-wave']); fxTimers.delete(id); }, 300+Math.random()*400);
@@ -969,9 +959,9 @@ function showSpot(i, withFx, dir=1){
             }, t);
             fxTimers.add(id);
         }
-        // 露出（初回のみ遅延）
+        // 露出
         if(!capOpen && Math.random()<0.55 && !playerOpen){
-            setTimeout(()=>{ nudgeExposure(); }, delay);
+            nudgeExposure();
         }
     }
 }
