@@ -1320,17 +1320,17 @@ async function buildEndCheki(){
     g.fillText(date, pad + imgW - 16, pad + imgH - 12);
     g.shadowBlur = 0;
 
-    // 作品名行（中央）→ 櫻木真乃
+    // 作品名行（中央）→ 櫻木真乃（通常チェキのtitle行と同じ位置）
     g.textAlign = 'center';
     g.font = "24px 'Shippori Antique', sans-serif";
     g.fillStyle = '#2b2b2b';
     const bandMid = pad + imgH + 55;
     g.fillText('櫻木真乃', W / 2, bandMid);
 
-    // サブ行なし・右ブロックをbandMid基準で下揃え
-    const idolY = bandMid;
+    // アイドル行なし・idolYはbandMid+34（通常チェキと同じ基準）
+    const idolY = bandMid + 34;
 
-    // 右ブロック：作者上・企画下
+    // 右ブロック：作者上・企画下（通常チェキと同じ基準）
     const rightBottomY = idolY - 3;
     g.textAlign = 'right';
     g.font = "15px 'Shippori Antique', sans-serif";
