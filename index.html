@@ -946,9 +946,13 @@ function showSpot(i, withFx, dir=1){
     // スライド時：カメラの反応（露出・EV・検知ログ）
     if(withFx){
         const delay = isFirstLoad ? 1500 : 0;
-        // 検知ログ：初回は読み込み完了後、2回目以降は即時
+        // 検知ログ：初回はloadeddataを待ってから、2回目以降は即時
         if(isFirstLoad){
-            vid.addEventListener('loadeddata', ()=>{ setTimeout(fireLog, 260); }, { once:true });
+            let logFired = false;
+            const fireLogOnce = ()=>{ if(!logFired){ logFired=true; setTimeout(fireLog, 260); } };
+            vid.addEventListener('loadeddata', fireLogOnce, { once:true });
+            // キャッシュ効いてる場合はreadyState>=2ですでに準備完了
+            if(vid.readyState >= 2){ fireLogOnce(); }
         } else {
             setTimeout(fireLog, 0);
         }
