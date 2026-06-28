@@ -1034,7 +1034,7 @@ let chekiURL = null;          // 生成したチェキ画像
 // 背景動画の現フレームを画像化（素材。これをチェキに合成する）
 function captureFrame(){
     try{
-        if(vid.readyState < 2 || vid.videoWidth === 0) return null;
+        if(vid.videoWidth === 0 || vid.videoHeight === 0) return null;
         const c=document.createElement('canvas');
         c.width  = vid.videoWidth;
         c.height = vid.videoHeight;
@@ -1116,7 +1116,7 @@ function buildCheki(spot, frameURL, shotAt){
 
 function setXShare(elId, spot){
     const authorPart = spot.handle ? `${spot.author} ${spot.handle}` : spot.author;
-    const shareText = `${spot.rep}との思い出を振り返ったよ！（作者：${authorPart}）\n\n${SHARE_TAG}\n${SITE_URL}`;
+    const shareText = `${spot.rep}との思い出を振り返ったよ！\n（作者：${authorPart}）\n\n${SHARE_TAG}\n${SITE_URL}`;
     document.getElementById(elId).href =
         `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
 }
@@ -1320,15 +1320,14 @@ async function buildEndCheki(){
     g.fillText(date, pad + imgW - 16, pad + imgH - 12);
     g.shadowBlur = 0;
 
-    // 作品名行（中央）→ 櫻木真乃（通常チェキのtitle行と同じ位置）
+    // 櫻木真乃（タイトル行とアイドル行の中間に配置）
     g.textAlign = 'center';
     g.font = "24px 'Shippori Antique', sans-serif";
     g.fillStyle = '#2b2b2b';
     const bandMid = pad + imgH + 55;
-    g.fillText('櫻木真乃', W / 2, bandMid);
-
-    // アイドル行なし・idolYはbandMid+34（通常チェキと同じ基準）
     const idolY = bandMid + 34;
+    const centerY = (bandMid + idolY) / 2;
+    g.fillText('櫻木真乃', W / 2, centerY);
 
     // 右ブロック：作者上・企画下（通常チェキと同じ基準）
     const rightBottomY = idolY - 3;
