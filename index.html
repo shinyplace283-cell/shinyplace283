@@ -1055,7 +1055,7 @@ function buildCheki(spot, frameURL, shotAt){
     return new Promise(resolve=>{
         const pad = 32;
         const imgW = 1280, imgH = Math.round(imgW * 9 / 16);
-        const W = imgW + pad * 2, H = imgH + pad * 2 + 96;
+        const W = imgW + pad * 2, H = imgH + pad * 2 + 110;
         const c = document.createElement('canvas'); c.width = W; c.height = H;
         const g = c.getContext('2d');
 
@@ -1087,25 +1087,24 @@ function buildCheki(spot, frameURL, shotAt){
             g.textAlign = 'center';
             g.font = "24px 'Shippori Antique', sans-serif";
             g.fillStyle = '#2b2b2b';
-            g.fillText(`『${spot.title}』`, W / 2, pad + imgH + 44);
+            const bandMid = pad + imgH + 55;
+            g.fillText(`『${spot.title}』`, W / 2, bandMid);
 
-            // アイドル名 + （作者：○○）横並び中央寄せ
+            // アイドル名（中央）
             g.font = "18px 'Shippori Antique', sans-serif";
             g.fillStyle = '#777777';
-            const idolW = g.measureText(spot.rep).width;
-            const authorText = `（作者：${spot.author}）`;
-            g.font = "14px 'Shippori Antique', sans-serif";
-            const authorW = g.measureText(authorText).width;
-            const gap = 8;
-            const totalW = idolW + gap + authorW;
-            const startX = W / 2 - totalW / 2;
-            g.textAlign = 'left';
-            g.font = "18px 'Shippori Antique', sans-serif";
-            g.fillStyle = '#777777';
-            g.fillText(spot.rep, startX, pad + imgH + 76);
-            g.font = "14px 'Shippori Antique', sans-serif";
+            const idolY = bandMid + 34;
+            g.fillText(spot.rep, W / 2, idolY);
+
+            // 右ブロック：アイドル名の下端に揃え・3px上げ
+            const rightBottomY = idolY - 3;
+            g.textAlign = 'right';
+            g.font = "15px 'Shippori Antique', sans-serif";
             g.fillStyle = '#aaaaaa';
-            g.fillText(authorText, startX + idolW + gap, pad + imgH + 76);
+            g.fillText(`作者：${spot.author}`, W - pad - 8, rightBottomY - 20);
+            g.font = "12px 'Shippori Antique', sans-serif";
+            g.fillStyle = '#bbbbbb';
+            g.fillText('嘘シャニマス聖地合同／パフェコミ', W - pad - 8, rightBottomY);
 
             resolve(c.toDataURL('image/jpeg', 0.92));
         };
