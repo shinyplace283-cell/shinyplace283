@@ -960,13 +960,21 @@ function showSpot(i, withFx, dir=1){
             const id=setTimeout(()=>{ if(!playerOpen) fire('play-wave', POOL['play-wave']); fxTimers.delete(id); }, 300+Math.random()*400);
             fxTimers.add(id);
         }
-        // AF：スライド直後に高確率（70%）で即発生
-        if(Math.random()<0.7 && !afFiredThisSpot){
-            const id=setTimeout(()=>{
-                if(!afFiredThisSpot && !playerOpen){ fire('play-af', POOL['play-af']); afFiredThisSpot = true; }
-                fxTimers.delete(id);
-            }, 300 + Math.random()*400);
-            fxTimers.add(id);
+        // AF：スライド直後に高確率（70%）で発生・初回は読み込み完了後
+        if(Math.random()<0.4 && !afFiredThisSpot){
+            const fireAF = ()=>{
+                const id=setTimeout(()=>{
+                    if(!afFiredThisSpot && !playerOpen){ fire('play-af', POOL['play-af']); afFiredThisSpot = true; }
+                    fxTimers.delete(id);
+                }, 300 + Math.random()*400);
+                fxTimers.add(id);
+            };
+            if(isFirstLoad){
+                if(vid.readyState >= 2){ fireAF(); }
+                else { vid.addEventListener('loadeddata', fireAF, { once:true }); }
+            } else {
+                fireAF();
+            }
         }
         // AF：数秒後に低確率（30%）で再発生
         if(Math.random()<0.3 && !afFiredThisSpot){
