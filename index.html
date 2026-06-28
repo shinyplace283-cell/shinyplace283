@@ -935,8 +935,7 @@ function showSpot(i, withFx, dir=1){
                 firstLoaded.add(spot.file);
             }, { once:true });
         }
-    }
-    // CAPTURED 印
+    }    // CAPTURED 印
     scr.classList.toggle('captured', viewed.has(spot.file));
     document.getElementById('status').textContent = spot.file + (viewed.has(spot.file)?'（CAPTURED）':'');
     updateDots();
