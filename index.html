@@ -1122,6 +1122,8 @@ function setXShare(elId, spot){
 
 function shoot(){
     if(playerOpen || afterglowOpen || capOpen || shutterLock) return;
+    // 動画フレームが取得できない状態ではシャッターを切らない
+    if(vid.readyState < 2) return;
     const spot = SPOTS[index];
     lastShot = { frameURL: captureFrame(), shotAt: new Date(), spot };
     chekiURL = null;
