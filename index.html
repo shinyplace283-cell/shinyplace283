@@ -992,6 +992,7 @@ let playerOpen = false;
 let afterglowOpen = false;
 let capOpen = true;          // タイトル（レンズキャップ）表示中
 let shutterLock = false;     // 開始直後の誤シャッター防止
+let endingOpen = false;
 let tutorialActive = false;  // 操作説明表示中
 // OKボタン：レンズキャップを外して体験開始。被写体が暗→明、準備でき次第AF＋検知ログ
 function startExperience(){
@@ -1206,7 +1207,6 @@ function backToFinder(spot){
 }
 
 // ───── エンディング ─────
-let endingOpen = false;
 let endChekiReady = false;
 
 function buildEndCredits(){
