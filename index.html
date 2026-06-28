@@ -792,7 +792,7 @@ const SPOTS = [
       persons:[{name:'浅倉透',color:'#50d0d0'},{name:'樋口円香',color:'#be1e3e'}] },
     { file:'wako3.mov', ytid:'7VSbOnmi5HE', author:'わこー', title:'水曜日のアップダウン4月15日放送回', rep:'七草にちか', handle:'@urata_wako', xurl:'https://x.com/urata_wako',
       persons:[{name:'七草にちか',color:'#a6cdb6'},{name:'OTHERS:7',color:'#ffffff'}] },
-    { file:'duka1.mov', ytid:'u01QXRr_2Io', author:'ヅカマゲドン', title:'Vlogはじめました', rep:'芹沢あさひ', handle:'', xurl:'',
+    { file:'duka1.mov', ytid:'u01QXRr_2Io', author:'ヅカマゲドン', title:'Vlogはじめました', rep:'芹沢あさひ', handle:'@zukaar_giriddon', xurl:'https://x.com/zukaar_giriddon',
       persons:[{name:'芹沢あさひ',color:'#f30100'}] },
 ];
 // 共有リンク（サイトのURL。後で正式URLに差し替え）
@@ -1141,7 +1141,7 @@ function openPlayer(spot){
     playerOpen = true;
     const f = document.getElementById('ytframe');
     const origin = encodeURIComponent(location.origin && location.origin!=='null' ? location.origin : location.href.split('#')[0]);
-    f.src = `https://www.youtube-nocookie.com/embed/${spot.ytid}?autoplay=1&rel=0&playsinline=1&enablejsapi=1&origin=${origin}`;
+    f.src = `https://www.youtube-nocookie.com/embed/${spot.ytid}?autoplay=1&rel=0&playsinline=1&origin=${origin}`;
     document.getElementById('credit-title').textContent = `『${spot.title}』`;
     const authorEl = document.getElementById('credit-author');
     if(spot.xurl){
@@ -1153,42 +1153,17 @@ function openPlayer(spot){
     try{ vid.pause(); }catch(e){}
     markViewed(spot.file);
 }
-// YouTube動画終了検知
-window.addEventListener('message', e => {
-    if(!playerOpen) return;
-    try{
-        const data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
-        if(data.event === 'infoDelivery' && data.info && data.info.playerState === 0){
-            const frame = document.getElementById('ytframe');
-            // ① iframeをゆっくりフェードアウト（1.5秒）
-            frame.style.transition = 'opacity 1.5s ease';
-            frame.style.opacity = '0';
-            // ② 1.5s後に暗転のまま1秒静止 → afterglowへ
-            setTimeout(()=>{
-                if(!playerOpen) return;
-                closePlayerToAfterglow();
-            }, 2500);
-        }
-    }catch(err){}
-});
-
 function closePlayer(){
     if(!playerOpen) return;
     playerOpen = false;
-    const frame = document.getElementById('ytframe');
-    frame.style.opacity = '1';
-    frame.style.transition = '';
-    frame.src = '';
+    document.getElementById('ytframe').src = '';
     document.getElementById('player').classList.remove('open');
     backToFinder(SPOTS[index]);
 }
 function closePlayerToAfterglow(){
     if(!playerOpen) return;
     playerOpen = false;
-    const frame = document.getElementById('ytframe');
-    frame.style.opacity = '1';
-    frame.style.transition = '';
-    frame.src = '';
+    document.getElementById('ytframe').src = '';
     document.getElementById('player').classList.remove('open');
     openAfterglow(SPOTS[index]);
 }
