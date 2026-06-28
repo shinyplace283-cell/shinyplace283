@@ -1122,10 +1122,10 @@ function setXShare(elId, spot){
 
 function shoot(){
     if(playerOpen || afterglowOpen || capOpen || shutterLock) return;
-    // 動画フレームが取得できない状態ではシャッターを切らない
-    if(vid.readyState < 2) return;
+    const frameURL = captureFrame();
+    if(!frameURL) return;
     const spot = SPOTS[index];
-    lastShot = { frameURL: captureFrame(), shotAt: new Date(), spot };
+    lastShot = { frameURL, shotAt: new Date(), spot };
     chekiURL = null;
     scr.classList.remove('flashing'); void scr.offsetWidth; scr.classList.add('flashing');
     // シャッター2回でヒントを消す
