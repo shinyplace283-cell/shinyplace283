@@ -1141,7 +1141,7 @@ function openPlayer(spot){
     playerOpen = true;
     const f = document.getElementById('ytframe');
     const origin = encodeURIComponent(location.origin && location.origin!=='null' ? location.origin : location.href.split('#')[0]);
-    f.src = `https://www.youtube-nocookie.com/embed/${spot.ytid}?autoplay=1&rel=0&playsinline=1&origin=${origin}`;
+    f.src = `https://www.youtube-nocookie.com/embed/${spot.ytid}?autoplay=1&rel=0&playsinline=1&enablejsapi=1&origin=${origin}`;
     document.getElementById('credit-title').textContent = `『${spot.title}』`;
     const authorEl = document.getElementById('credit-author');
     if(spot.xurl){
@@ -1153,17 +1153,37 @@ function openPlayer(spot){
     try{ vid.pause(); }catch(e){}
     markViewed(spot.file);
 }
+// YouTube動画終了検知
+window.addEventListener('message', e => {
+    if(!playerOpen) return;
+    try{
+        const data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
+        // info.playerState === 0 が終了
+        if(data.event === 'infoDelivery' && data.info && data.info.playerState === 0){
+            const frame = document.getElementById('ytframe');
+            frame.style.transition = 'opacity 0.8s ease';
+            frame.style.opacity = '0';
+        }
+    }catch(e){}
+});
+
 function closePlayer(){
     if(!playerOpen) return;
     playerOpen = false;
-    document.getElementById('ytframe').src = '';
+    const frame = document.getElementById('ytframe');
+    frame.style.opacity = '1';
+    frame.style.transition = '';
+    frame.src = '';
     document.getElementById('player').classList.remove('open');
     backToFinder(SPOTS[index]);
 }
 function closePlayerToAfterglow(){
     if(!playerOpen) return;
     playerOpen = false;
-    document.getElementById('ytframe').src = '';
+    const frame = document.getElementById('ytframe');
+    frame.style.opacity = '1';
+    frame.style.transition = '';
+    frame.src = '';
     document.getElementById('player').classList.remove('open');
     openAfterglow(SPOTS[index]);
 }
