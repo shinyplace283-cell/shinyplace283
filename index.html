@@ -1158,13 +1158,18 @@ window.addEventListener('message', e => {
     if(!playerOpen) return;
     try{
         const data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
-        // info.playerState === 0 が終了
         if(data.event === 'infoDelivery' && data.info && data.info.playerState === 0){
             const frame = document.getElementById('ytframe');
-            frame.style.transition = 'opacity 0.8s ease';
+            // ① iframeをゆっくりフェードアウト（1.5秒）
+            frame.style.transition = 'opacity 1.5s ease';
             frame.style.opacity = '0';
+            // ② 1.5s後に暗転のまま1秒静止 → afterglowへ
+            setTimeout(()=>{
+                if(!playerOpen) return;
+                closePlayerToAfterglow();
+            }, 2500);
         }
-    }catch(e){}
+    }catch(err){}
 });
 
 function closePlayer(){
