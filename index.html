@@ -633,7 +633,7 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
             <div class="credit"><span class="credit-title" id="credit-title">タイトル</span><span class="credit-author" id="credit-author">制作者</span></div>
             <div class="pbtns">
                 <button class="pyt pxshare" onclick="closePlayerToAfterglow()">思い出を共有する</button>
-                <button class="pclose" onclick="closePlayer()">× 撮影に戻る</button>
+                <button class="pclose" onclick="closePlayer()">撮影に戻る</button>
             </div>
             <p class="pnote"><a class="cap-yt" href="https://www.youtube.com/" target="_blank" rel="noopener">YouTube でまとめて見る</a></p>
         </div>
@@ -644,7 +644,7 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
             <div class="pbtns">
                 <a class="pyt pxshare" id="ag-xshare" href="#" target="_blank" rel="noopener">X を開く</a>
                 <a class="pyt" id="ag-save" href="#" download>画像を保存する</a>
-                <button class="pclose" onclick="closeAfterglow()">← 撮影に戻る</button>
+                <button class="pclose" onclick="closeAfterglow()">撮影に戻る</button>
             </div>
 
         </div>
@@ -1080,7 +1080,7 @@ function buildCheki(spot, frameURL, shotAt){
             g.fillStyle = 'rgba(255,200,80,.9)';
             g.shadowColor = 'rgba(0,0,0,.8)';
             g.shadowBlur = 6;
-            g.fillText(date, pad + imgW - 8, pad + imgH - 12);
+            g.fillText(date, pad + imgW - 16, pad + imgH - 12);
             g.shadowBlur = 0;
 
             // 作品名（中央）
@@ -1101,10 +1101,10 @@ function buildCheki(spot, frameURL, shotAt){
             g.textAlign = 'right';
             g.font = "15px 'Shippori Antique', sans-serif";
             g.fillStyle = '#aaaaaa';
-            g.fillText(`作者：${spot.author}`, W - pad - 8, rightBottomY - 20);
+            g.fillText(`作者：${spot.author}`, W - pad - 16, rightBottomY - 20);
             g.font = "12px 'Shippori Antique', sans-serif";
             g.fillStyle = '#bbbbbb';
-            g.fillText('嘘シャニマス聖地合同／パフェコミ', W - pad - 8, rightBottomY);
+            g.fillText('嘘シャニマス聖地合同／パフェコミ', W - pad - 16, rightBottomY);
 
             resolve(c.toDataURL('image/jpeg', 0.92));
         };
