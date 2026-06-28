@@ -962,12 +962,9 @@ function showSpot(i, withFx, dir=1){
         }
         // AF
         if(Math.random()<0.4 && !afFiredThisSpot){
-            const myIndex = index;
-            const t = delay + 2000 + Math.random()*5000;
+            const t = 2000 + Math.random()*5000;
             const id=setTimeout(()=>{
-                if(!afFiredThisSpot && !playerOpen && index === myIndex){
-                    fire('play-af', POOL['play-af']); afFiredThisSpot = true;
-                }
+                if(!afFiredThisSpot && !playerOpen){ fire('play-af', POOL['play-af']); afFiredThisSpot = true; }
                 fxTimers.delete(id);
             }, t);
             fxTimers.add(id);
