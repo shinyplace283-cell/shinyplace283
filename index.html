@@ -1197,6 +1197,7 @@ function backToFinder(spot){
     scr.classList.toggle('captured', viewed.has(spot.file));
     document.getElementById('status').textContent = spot.file + '（CAPTURED）';
     if(viewed.size === SPOTS.length){
+        endingOpen = true;
         const findfade = document.getElementById('findfade');
         findfade.style.opacity = '1';
         scr.classList.add('ending-active');
@@ -1348,7 +1349,7 @@ async function saveEndCheki(){
     if(!endChekiReady) await buildEndCheki();
     const url = document.getElementById('end-cheki-canvas').toDataURL('image/jpeg', 0.92);
     const a = document.createElement('a');
-    a.href = url; a.download = 'pafecom_ending.jpg'; a.click();
+    a.href = url; a.download = 'ending_mano_memory.jpg'; a.click();
 }
 
 // キー操作：← → スライド / Space シャッター / Esc 閉じる
