@@ -635,7 +635,7 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
                 <div class="cap-sub">シャッターを切って思い出を振り返ろう</div>
                 <button class="cap-ok" onclick="startExperience()">フォトモードを始める</button>
 
-                <a class="cap-yt" id="cap-yt" href="https://www.youtube.com/" target="_blank" rel="noopener">撮影をやめて YouTube で見る</a>
+                <a class="cap-yt" id="cap-yt" href="https://www.youtube.com/playlist?list=PLBkO5Qx_9Igw" target="_blank" rel="noopener">撮影をやめて YouTube で見る</a>
             </div>
         </div>
 
@@ -647,7 +647,7 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
                 <button class="pyt pxshare" onclick="closePlayerToAfterglow()">思い出を共有する</button>
                 <button class="pclose" onclick="closePlayer()">撮影に戻る</button>
             </div>
-            <p class="pnote"><a class="cap-yt" href="https://www.youtube.com/" target="_blank" rel="noopener">YouTube でまとめて見る</a></p>
+            <p class="pnote"><a class="cap-yt" href="https://www.youtube.com/playlist?list=PLBkO5Qx_9Igw" target="_blank" rel="noopener">YouTube でまとめて見る</a></p>
         </div>
 
         <!-- 余韻画面：見終わった後、撮ってきたチェキとともに共有 -->
@@ -790,21 +790,21 @@ const LOGMSG = [
 // ★ 全コミュデータ（CSVより）。persons は最大2人＝検知ログに2行表示
 // rep=共有文面の代表アイドル / handle=作者のXアカウント（@、後で記入）
 const SPOTS = [
-    { file:'FJ1.mov',   ytid:'0e7q_znhh38', author:'FJオクト', title:'紅茶時間', rep:'七草にちか', handle:'@FJ02653401', xurl:'https://x.com/FJ02653401', filename:'teatime.nichika',
+    { file:'FJ1.mov',   ytid:'Cj_XbeWzN8Q', author:'FJオクト', title:'紅茶時間', rep:'七草にちか', handle:'@FJ02653401', xurl:'https://x.com/FJ02653401', filename:'teatime.nichika',
       persons:[{name:'七草にちか',color:'#a6cdb6'},{name:'緋田美琴',color:'#760f10'}] },
-    { file:'J@Q1.mov',   ytid:'Eg_CZoubROs', author:'J@Q', title:'ビッグに', rep:'七草にちか', handle:'@JP_SOSA236', xurl:'https://x.com/JP_SOSA236', filename:'tobig.nichika',
+    { file:'J@Q1.mov',   ytid:'rrwQ2W2nOe0', author:'J@Q', title:'ビッグに', rep:'七草にちか', handle:'@JP_SOSA236', xurl:'https://x.com/JP_SOSA236', filename:'tobig.nichika',
       persons:[{name:'七草にちか',color:'#a6cdb6'}] },
-    { file:'nabe1.mov', ytid:'WAOYHb0y3uw', author:'無駄にデカい鍋敷き', title:'Nさん', rep:'福丸小糸', handle:'@toobigrug', xurl:'https://x.com/toobigrug', filename:'unknown_n.koito',
+    { file:'nabe1.mov', ytid:'6Y3GFcSoBS4', author:'無駄にデカい鍋敷き', title:'Nさん', rep:'福丸小糸', handle:'@toobigrug', xurl:'https://x.com/toobigrug', filename:'unknown_n.koito',
       persons:[{name:'福丸小糸',color:'#7967c3'},{name:'UNKNOWN:N',color:'#ffffff'}] },
-    { file:'nabe2.mov', ytid:'-vJ6bqCXpeg', author:'無駄にデカい鍋敷き', title:'どこから春が', rep:'桑山千雪', handle:'@toobigrug', xurl:'https://x.com/toobigrug', filename:'springfrom.chiyuki',
+    { file:'nabe2.mov', ytid:'bm5gPrfilk8', author:'無駄にデカい鍋敷き', title:'どこから春が', rep:'桑山千雪', handle:'@toobigrug', xurl:'https://x.com/toobigrug', filename:'springfrom.chiyuki',
       persons:[{name:'桑山千雪',color:'#fafafa'}] },
-    { file:'wako1.mov', ytid:'LMlPdnIar-Y', author:'わこー', title:'他人の瞳は異世界の窓', rep:'櫻木真乃', handle:'@urata_wako', xurl:'https://x.com/urata_wako', filename:'eyes.mano',
+    { file:'wako1.mov', ytid:'s2g2saXpQCM', author:'わこー', title:'他人の瞳は異世界の窓', rep:'櫻木真乃', handle:'@urata_wako', xurl:'https://x.com/urata_wako', filename:'eyes.mano',
       persons:[{name:'櫻木真乃',color:'#ffbad6'},{name:'UNKNOWN',color:'#ffffff'}] },
-    { file:'wako2.mov', ytid:'-kbS5f1QrMA', author:'わこー', title:'境界域', rep:'浅倉透', handle:'@urata_wako', xurl:'https://x.com/urata_wako', filename:'boundary.toru',
+    { file:'wako2.mov', ytid:'LZimhLIrUBY', author:'わこー', title:'境界域', rep:'浅倉透', handle:'@urata_wako', xurl:'https://x.com/urata_wako', filename:'boundary.toru',
       persons:[{name:'浅倉透',color:'#50d0d0'},{name:'樋口円香',color:'#be1e3e'}] },
-    { file:'wako3.mov', ytid:'7VSbOnmi5HE', author:'わこー', title:'水曜日のアップダウン4月15日放送回', rep:'七草にちか', handle:'@urata_wako', xurl:'https://x.com/urata_wako', filename:'wednesday.nichika',
+    { file:'wako3.mov', ytid:'ce3jKQHpJ6Q', author:'わこー', title:'水曜日のアップダウン4月15日放送回', rep:'七草にちか', handle:'@urata_wako', xurl:'https://x.com/urata_wako', filename:'wednesday.nichika',
       persons:[{name:'七草にちか',color:'#a6cdb6'},{name:'OTHERS:7',color:'#ffffff'}] },
-    { file:'duka1.mov', ytid:'u01QXRr_2Io', author:'ヅカマゲドン', title:'Vlogはじめました', rep:'芹沢あさひ', handle:'@zukaar_giriddon', xurl:'https://x.com/zukaar_giriddon', filename:'vlog.asahi',
+    { file:'duka1.mov', ytid:'Ebaz-9usBvQ', author:'ヅカマゲドン', title:'Vlogはじめました', rep:'芹沢あさひ', handle:'@zukaar_giriddon', xurl:'https://x.com/zukaar_giriddon', filename:'vlog.asahi',
       persons:[{name:'芹沢あさひ',color:'#f30100'}] },
 ];
 // 共有リンク（サイトのURL。後で正式URLに差し替え）
