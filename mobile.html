@@ -531,7 +531,7 @@ html, body{ height:100%; overflow:hidden; overscroll-behavior:none; }
 
 /* ── スワイプ／タップ ヒント（開始直後に一度だけ） ── */
 #m-hint{
-    position:absolute; left:50%; top:38%; transform:translate(-50%,-50%);
+    position:absolute; left:50%; top:72%; transform:translate(-50%,-50%);
     z-index:180; pointer-events:none;
     display:grid; grid-template-columns:auto auto auto; gap:10px 0;
     align-items:center;
@@ -690,6 +690,8 @@ html, body{ height:100%; overflow:hidden; overscroll-behavior:none; }
                 </div>
                 <div class="cluster center"></div>
                 <div class="cluster right">
+                    <div class="item"><span class="lbl">TIME</span><span class="val" id="clock">--:--</span></div>
+                    <div class="batt2"></div>
                     <div class="item" style="align-items:flex-end;"><span class="lbl">ALBUM</span><span class="val"><span id="album">0</span>/8</span></div>
                 </div>
             </div>
@@ -772,12 +774,11 @@ html, body{ height:100%; overflow:hidden; overscroll-behavior:none; }
         <!-- 余韻画面：見終わった後、撮ってきたチェキとともに共有 -->
         <div class="afterglow" id="afterglow">
             <img id="ag-photo" class="ag-photo" alt="">
-            <p style="font-family:'Share Tech Mono',monospace;font-size:11px;color:rgba(255,255,255,.35);letter-spacing:.1em;text-align:center;">長押しで保存できます</p>
+            <p style="font-family:'Share Tech Mono',monospace;font-size:11px;color:rgba(255,255,255,.7);letter-spacing:.1em;text-align:center;">長押しで保存できます</p>
             <div class="pbtns">
                 <a class="pyt pxshare" id="ag-xshare" href="#" target="_blank" rel="noopener">X を開く</a>
                 <button class="pclose" onclick="closeAfterglow()">撮影に戻る</button>
             </div>
-
         </div>
 
         <!-- エンディング -->
@@ -806,9 +807,9 @@ html, body{ height:100%; overflow:hidden; overscroll-behavior:none; }
                     <div class="end-share-placeholder" id="end-cheki-placeholder">画像を生成中…<br>櫻木真乃（特別出演・作者：わこー）</div>
                     <canvas id="end-cheki-canvas"></canvas>
                 </div>
+                <p style="font-family:'Share Tech Mono',monospace;font-size:11px;color:rgba(255,255,255,.7);letter-spacing:.1em;text-align:center;">長押しで保存できます</p>
                 <div class="end-share-btns">
-                    <button class="end-btn primary" onclick="saveEndCheki()">画像を保存する</button>
-                    <a class="end-btn" id="end-cheki-x" href="#" target="_blank" rel="noopener">X を開く</a>
+                    <a class="end-btn primary" id="end-cheki-x" href="#" target="_blank" rel="noopener">X を開く</a>
                 </div>
                 <button class="end-share-back" onclick="closeEndShare()">← 戻る</button>
             </div>
@@ -927,7 +928,7 @@ const SPOTS = [
       persons:[{name:'芹沢あさひ',color:'#f30100'}] },
 ];
 // 共有リンク（サイトのURL。後で正式URLに差し替え）
-const SITE_URL = 'https://shinyplace283-cell.github.io/shinyplace283/';
+const SITE_URL = location.href.split('#')[0];
 // 共有タグ
 const SHARE_TAG = '#嘘シャニマス聖地';
 // 登場順：未訪問優先のランダム。全部見たら再シャッフル
