@@ -421,6 +421,8 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
     grid-template-columns:1fr 1fr;
     gap:24px; align-items:start;
     width:100%; text-align:left;
+    justify-items:start;
+    margin:0 auto;
 }
 .end-credit-work{
     font-family:'Zen Kaku Gothic New',sans-serif;
@@ -515,6 +517,18 @@ html, body{ height:100%; overflow:hidden; overscroll-behavior:none; }
 /* ── 操作ヒント（キーボード用）は常に非表示 ── */
 .op-hint{ display:none !important; }
 .cap-tutorial{ display:none !important; }
+
+/* ag-photoは長押し保存を許可 */
+.ag-photo, #end-cheki-canvas{
+    -webkit-touch-callout:default !important;
+    -webkit-user-select:auto !important;
+    user-select:auto !important;
+    pointer-events:auto !important;
+}
+
+/* 時計・電池を非表示 */
+.hud .bar.top .cluster.right .item:not(:last-child),
+.hud .bar.top .batt2{ display:none !important; }
 
 /* ── 下バーの撮影設定値（SS/F/ISO/EV・WB/FORMAT・波形）は非表示 ── */
 .hud .bar.bottom .cluster.left,
@@ -1279,7 +1293,7 @@ function setXShare(elId, spot){
 }
 
 function shoot(){
-    if(playerOpen || afterglowOpen || capOpen || shutterLock) return;
+    if(playerOpen || afterglowOpen || capOpen || shutterLock || endingOpen) return;
     const frameURL = captureFrame();
     if(!frameURL) return;
     const spot = SPOTS[index];
