@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>嘘シャニマス聖地合同／パフェコミ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,7 +17,7 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
 .warn{ font-size:12px; color:#ffcf6b; margin:0 0 18px; line-height:1.7; }
 
 /* ───── ファインダー画面（最初から全画面） ───── */
-.screen{ position:fixed; inset:0; width:100vw; height:100dvh; overflow:hidden;
+.screen{ position:fixed; inset:0; width:100vw; height:100vh; overflow:hidden;
     background:#0a0c0f; container-type:size; }
 .screen video{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
 .stage{ position:absolute; inset:0; }
@@ -359,7 +359,7 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
 #ending.open{ visibility:visible; pointer-events:auto; }
 #endvid{
     position:absolute; inset:0; width:100%; height:100%;
-    object-fit:contain; background:#000; z-index:0;
+    object-fit:cover; z-index:0;
 }
 #endveil{ position:absolute; inset:0; z-index:1; background:rgba(0,0,0,.52); }
 #endfade{
@@ -497,6 +497,127 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
     pointer-events:auto;
 }
 .end-share-back:hover{ color:rgba(255,255,255,.78); }
+
+/* ════════════════════════════════════════════
+   MOBILE OVERRIDES（mobile.html 専用）
+   ════════════════════════════════════════════ */
+
+/* ── 基盤：dvh・スクロール抑止・タッチ挙動 ── */
+html, body{ height:100%; overflow:hidden; overscroll-behavior:none; }
+.screen{
+    width:100vw; height:100vh; height:100dvh;
+    touch-action:manipulation;
+    -webkit-user-select:none; user-select:none;
+    -webkit-touch-callout:none;
+}
+.stage{ touch-action:none; }
+
+/* ── 操作ヒント（キーボード用）は常に非表示 ── */
+.op-hint{ display:none !important; }
+.cap-tutorial{ display:none !important; }
+
+/* ── 下バーの撮影設定値（SS/F/ISO/EV・WB/FORMAT・波形）は非表示 ── */
+.hud .bar.bottom .cluster.left,
+.hud .bar.bottom .cluster.right{ display:none; }
+
+/* ── シャッター：大きく・押しやすく ── */
+.shutter{
+    width:66px; height:66px; min-width:66px; min-height:66px;
+    border-width:4px;
+}
+
+/* ── エンディング動画：横動画を見切れさせない ── */
+#endvid{ object-fit:contain; background:#000; }
+
+/* ── スワイプ／タップ ヒント（開始直後に一度だけ） ── */
+#m-hint{
+    position:absolute; left:50%; top:56%; transform:translate(-50%,-50%);
+    z-index:180; pointer-events:none;
+    display:grid; grid-template-columns:auto auto auto; gap:10px 0;
+    align-items:center;
+    font-family:'Zen Kaku Gothic New',sans-serif;
+    font-size:14px; letter-spacing:.14em;
+    color:rgba(255,255,255,.92);
+    text-shadow:0 1px 12px rgba(0,0,0,.95);
+    opacity:0; transition:opacity .8s ease;
+}
+#m-hint.on{ opacity:1; }
+#m-hint .k{ text-align:right; }
+#m-hint .s{ text-align:center; color:rgba(255,255,255,.4); padding:0 8px; }
+#m-hint .d{ text-align:left; }
+
+/* ── 縦向きスマホのレイアウト ── */
+@media (orientation:portrait){
+    .screen{
+        --band-top: calc(7% + env(safe-area-inset-top));
+        --band-bottom: calc(13% + env(safe-area-inset-bottom));
+    }
+    .letterbox{ height:var(--band-top); }
+    .lb-bottom{ height:var(--band-bottom); }
+    .corners{ top:var(--band-top); bottom:var(--band-bottom); }
+    .corners span{ width:22px; height:22px; border-width:2.5px; }
+    .hud .bar{ padding:0 14px; }
+    .hud .bar.top{ height:var(--band-top); padding-top:env(safe-area-inset-top); }
+    .hud .bar.bottom{ height:var(--band-bottom); padding-bottom:env(safe-area-inset-bottom); }
+    .hud .cluster{ gap:14px; }
+
+    /* HUD文字：cqw基準だと縦画面で潰れるためpxで再定義 */
+    .item .lbl{ font-size:8px; }
+    .item .val{ font-size:12px; }
+    .item.inline .val{ font-size:10px; }
+    .rec{ font-size:11px; gap:5px; }
+    .rec .dot{ width:7px; height:7px; }
+    .batt2{ width:22px; height:11px; }
+    .batt2::after{ right:-4px; width:3px; height:6px; }
+    .picto{ display:none; }   /* 幅が足りないため省略 */
+
+    /* レティクル・AF枠 */
+    .level, .reticle{ width:60px; height:60px; }
+    .level .lh, .reticle .lh{ left:-18px; width:12px; }
+    .level .rh, .reticle .rh{ right:-18px; width:12px; }
+    .level .dot, .reticle .dot{ width:4px; height:4px; }
+    .focusbox span{ width:12px; height:12px; border-width:2px; }
+    .afind{ font-size:13px; bottom:32%; }
+
+    /* 検知ログ・CAPTURED印・ドット */
+    .log{ font-size:12px; right:14px; }
+    .logpos-bottom .log{ bottom:calc(var(--band-bottom) + 3%); }
+    .logpos-top .log{ top:calc(var(--band-top) + 3%); }
+    .capbadge{ font-size:11px; left:14px; top:calc(var(--band-top) + 2%); padding:3px 8px; }
+    .dot-indicator{ bottom:calc(var(--band-bottom) + 3%); gap:8px; }
+    .dot-indicator .di-bracket{ font-size:10px; }
+    .dot-indicator .di-dot{ width:7px; height:7px; }
+
+    /* タイトル画面 */
+    .cap-title{ font-size:clamp(20px, 6.2vw, 34px); }
+    .cap-sub{ font-size:13px; }
+    .cap-ok{ font-size:15px; padding:13px 34px; }
+    .cap-yt{ font-size:12px; }
+
+    /* コミュ再生・余韻画面 */
+    .player{ gap:16px; padding:20px 16px calc(20px + env(safe-area-inset-bottom)); }
+    .player .frame{ width:100%; max-height:none; }
+    .player .credit-title{ font-size:16px; }
+    .player .credit-author{ font-size:12px; }
+    .player .pnote{ font-size:11px; max-width:100%; }
+    .player .pbtns, .afterglow .pbtns{ flex-direction:column; gap:10px; width:100%; max-width:300px; }
+    .player .pyt, .player .pclose,
+    .afterglow .pyt, .afterglow .pclose{
+        font-size:13px; padding:13px 16px; min-width:0; width:100%;
+    }
+    .afterglow{ gap:18px; padding:24px 16px calc(24px + env(safe-area-inset-bottom)); }
+    .afterglow .ag-photo{ max-width:88vw; max-height:50dvh; }
+
+    /* エンディング */
+    #end-content{ padding-bottom:env(safe-area-inset-bottom); }
+    #endfade{ padding-bottom:14vh; }
+    #end-complete{ letter-spacing:.2em; padding:0 16px; }
+}
+
+/* ── 横向きスマホ：既定レイアウトを活かしつつ押しやすさを確保 ── */
+@media (orientation:landscape){
+    .shutter{ width:50px; height:50px; min-width:50px; min-height:50px; border-width:4px; }
+}
 </style>
 </head>
 <body>
@@ -1408,21 +1529,6 @@ window.addEventListener('keydown', e=>{
     else if(e.code==='Space'){ e.preventDefault(); shoot(); }
 });
 
-// スワイプ操作（スマホ用）
-let touchStartX = 0, touchStartY = 0;
-document.addEventListener('touchstart', e=>{
-    touchStartX = e.touches[0].clientX;
-    touchStartY = e.touches[0].clientY;
-}, { passive:true });
-document.addEventListener('touchend', e=>{
-    if(playerOpen || afterglowOpen || endingOpen || capOpen) return;
-    const dx = e.changedTouches[0].clientX - touchStartX;
-    const dy = e.changedTouches[0].clientY - touchStartY;
-    if(Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40){
-        slide(dx < 0 ? 1 : -1);
-    }
-}, { passive:true });
-
 // 初期化：未訪問優先のランダム順で最初の1枚を表示
 updateCard();
 buildOrder();
@@ -1447,6 +1553,78 @@ function scheduleAmbient(){
     ambientTimer = setTimeout(ambientTick, AMBIENT_MIN + Math.random()*(AMBIENT_MAX-AMBIENT_MIN));
 }
 scheduleAmbient();
+</script>
+
+<script>
+/* ════════════════════════════════════════════
+   MOBILE 操作（mobile.html 専用）
+   ・左右スワイプ：スポット移動
+   ・画面タップ：シャッター
+   ・開始直後に操作ヒントを一度だけ表示
+   ════════════════════════════════════════════ */
+
+// ── スワイプ／タップ判定 ──
+(function(){
+    let sx = 0, sy = 0, st = 0, tracking = false;
+    const SWIPE_DIST = 48;   // スワイプ判定の最小距離(px)
+    const TAP_DIST   = 12;   // タップ判定の最大移動(px)
+    const TAP_TIME   = 400;  // タップ判定の最大時間(ms)
+
+    scr.addEventListener('touchstart', e => {
+        if(e.touches.length !== 1){ tracking = false; return; }
+        tracking = true;
+        sx = e.touches[0].clientX;
+        sy = e.touches[0].clientY;
+        st = Date.now();
+    }, { passive:true });
+
+    scr.addEventListener('touchend', e => {
+        if(!tracking) return;
+        tracking = false;
+        if(capOpen || playerOpen || afterglowOpen || endingOpen) return;
+
+        const t  = e.changedTouches[0];
+        const dx = t.clientX - sx;
+        const dy = t.clientY - sy;
+        const dt = Date.now() - st;
+
+        // 横スワイプ：スライド（左スワイプ＝次へ）
+        if(Math.abs(dx) > SWIPE_DIST && Math.abs(dx) > Math.abs(dy) * 1.4){
+            slide(dx < 0 ? 1 : -1);
+            return;
+        }
+
+        // タップ：シャッター（ボタン・リンク上のタップは各要素に任せる）
+        if(Math.abs(dx) < TAP_DIST && Math.abs(dy) < TAP_DIST && dt < TAP_TIME){
+            if(e.target.closest('button, a')) return;
+            shoot();
+        }
+    }, { passive:true });
+})();
+
+// ── 開始直後の操作ヒント（一度だけ・自然に消える） ──
+function showMobileHint(){
+    if(document.getElementById('m-hint')) return;
+    const el = document.createElement('div');
+    el.id = 'm-hint';
+    el.innerHTML =
+        '<span class="k">スワイプ</span><span class="s">:</span><span class="d">移動する</span>' +
+        '<span class="k">タップ</span><span class="s">:</span><span class="d">撮影する</span>';
+    scr.appendChild(el);
+    requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add('on')));
+    setTimeout(()=>{
+        el.classList.remove('on');
+        setTimeout(()=>el.remove(), 900);
+    }, 3800);
+}
+
+// startExperience をラップ：暗転が明けたタイミングでヒントを出す
+const _startExperienceOrig = startExperience;
+startExperience = function(){
+    const wasCap = capOpen;
+    _startExperienceOrig();
+    if(wasCap) setTimeout(showMobileHint, 1500);
+};
 </script>
 </body>
 </html>
