@@ -260,7 +260,7 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
 .level .dot{ position:absolute; left:50%; top:50%; width:0.5cqw; height:0.5cqw; background:rgba(255,255,255,.8); border-radius:50%; transform:translate(-50%,-50%); }
 
 /* AF枠：通常は非表示。AF発動時だけ出現して点滅→ロック */
-.focusbox{ position:absolute; left:50%; top:50%; width:22%; height:32%; transform:translate(-50%,-50%); opacity:0; pointer-events:none; z-index:147; }
+.focusbox{ position:absolute; left:50%; top:50%; width:22%; height:22%; transform:translate(-50%,-50%); opacity:0; pointer-events:none; z-index:147; }
 .focusbox span{ position:absolute; width:1.3cqw; height:1.3cqw; border:0.22cqw solid rgba(255,255,255,.9); }
 .focusbox .a{ top:0;left:0;border-right:0;border-bottom:0 } .focusbox .b{ top:0;right:0;border-left:0;border-bottom:0 }
 .focusbox .c{ bottom:0;left:0;border-right:0;border-top:0 } .focusbox .d{ bottom:0;right:0;border-left:0;border-top:0 }
@@ -531,7 +531,7 @@ html, body{ height:100%; overflow:hidden; overscroll-behavior:none; }
 
 /* ── スワイプ／タップ ヒント（開始直後に一度だけ） ── */
 #m-hint{
-    position:absolute; left:50%; top:56%; transform:translate(-50%,-50%);
+    position:absolute; left:50%; top:38%; transform:translate(-50%,-50%);
     z-index:180; pointer-events:none;
     display:grid; grid-template-columns:auto auto auto; gap:10px 0;
     align-items:center;
@@ -690,8 +690,6 @@ html, body{ height:100%; overflow:hidden; overscroll-behavior:none; }
                 </div>
                 <div class="cluster center"></div>
                 <div class="cluster right">
-                    <div class="item"><span class="lbl">TIME</span><span class="val" id="clock">--:--</span></div>
-                    <div class="batt2"></div>
                     <div class="item" style="align-items:flex-end;"><span class="lbl">ALBUM</span><span class="val"><span id="album">0</span>/8</span></div>
                 </div>
             </div>
@@ -774,9 +772,9 @@ html, body{ height:100%; overflow:hidden; overscroll-behavior:none; }
         <!-- 余韻画面：見終わった後、撮ってきたチェキとともに共有 -->
         <div class="afterglow" id="afterglow">
             <img id="ag-photo" class="ag-photo" alt="">
+            <p style="font-family:'Share Tech Mono',monospace;font-size:11px;color:rgba(255,255,255,.35);letter-spacing:.1em;text-align:center;">長押しで保存できます</p>
             <div class="pbtns">
                 <a class="pyt pxshare" id="ag-xshare" href="#" target="_blank" rel="noopener">X を開く</a>
-                <a class="pyt" id="ag-save" href="#" download>画像を保存する</a>
                 <button class="pclose" onclick="closeAfterglow()">撮影に戻る</button>
             </div>
 
@@ -929,7 +927,7 @@ const SPOTS = [
       persons:[{name:'芹沢あさひ',color:'#f30100'}] },
 ];
 // 共有リンク（サイトのURL。後で正式URLに差し替え）
-const SITE_URL = location.href.split('#')[0];
+const SITE_URL = 'https://shinyplace283-cell.github.io/shinyplace283/';
 // 共有タグ
 const SHARE_TAG = '#嘘シャニマス聖地';
 // 登場順：未訪問優先のランダム。全部見たら再シャッフル
