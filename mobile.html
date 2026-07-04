@@ -260,8 +260,8 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
 .level .dot{ position:absolute; left:50%; top:50%; width:0.5cqw; height:0.5cqw; background:rgba(255,255,255,.8); border-radius:50%; transform:translate(-50%,-50%); }
 
 /* AF枠：通常は非表示。AF発動時だけ出現して点滅→ロック */
-.focusbox{ position:absolute; left:50%; top:50%; width:22cqw; height:22cqw; transform:translate(-50%,-50%); opacity:0; pointer-events:none; z-index:147; }
-.focusbox span{ position:absolute; width:1.3cqw; height:1.3cqw; border:0.22cqw solid rgba(255,255,255,.9); }
+.focusbox{ position:absolute; left:50%; top:50%; width:22vw; height:22vw; transform:translate(-50%,-50%); opacity:0; pointer-events:none; z-index:147; }
+.focusbox span{ position:absolute; width:1.3vw; height:1.3vw; border:0.22vw solid rgba(255,255,255,.9); }
 .focusbox .a{ top:0;left:0;border-right:0;border-bottom:0 } .focusbox .b{ top:0;right:0;border-left:0;border-bottom:0 }
 .focusbox .c{ bottom:0;left:0;border-right:0;border-top:0 } .focusbox .d{ bottom:0;right:0;border-left:0;border-top:0 }
 @keyframes afbox{ 0%{opacity:0; transform:translate(-50%,-50%) scale(1.25)} 12%{opacity:.95} 24%{opacity:.3} 38%{opacity:.95} 52%{opacity:.3} 64%{opacity:1; transform:translate(-50%,-50%) scale(1.0)} 86%{opacity:.9} 100%{opacity:0} }
@@ -546,13 +546,13 @@ html, body{ height:100%; overflow:hidden; overscroll-behavior:none; }
 /* ── スワイプ／タップ ヒント（開始直後に一度だけ） ── */
 #m-hint{
     position:absolute;
-    right:4cqw; bottom:3cqh;
+    right:5vw; bottom:16%;
     transform:none; left:auto; top:auto;
     z-index:180; pointer-events:none;
     display:grid; grid-template-columns:auto auto auto; gap:4px 0;
     align-items:center;
     font-family:'Share Tech Mono',monospace;
-    font-size:clamp(9px,1.1cqw,11px); letter-spacing:.1em;
+    font-size:clamp(9px,2.5vw,11px); letter-spacing:.1em;
     color:rgba(255,255,255,.55);
     text-shadow:0 1px 8px rgba(0,0,0,.95);
     opacity:0; transition:opacity .8s ease;
@@ -1381,6 +1381,7 @@ function backToFinder(spot){
     document.getElementById('status').textContent = spot.file + '（CAPTURED）';
     if(viewed.size === SPOTS.length){
         endingOpen = true;
+        try{ vid.pause(); }catch(e){}
         const findfade = document.getElementById('findfade');
         findfade.style.opacity = '1';
         scr.classList.add('ending-active');
