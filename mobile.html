@@ -819,7 +819,9 @@ html, body{ height:100%; overflow:hidden; overscroll-behavior:none; }
             <div id="end-share">
                 <div class="end-share-cheki">
                     <div class="end-share-placeholder" id="end-cheki-placeholder">画像を生成中…<br>櫻木真乃（特別出演・作者：わこー）</div>
-                    <canvas id="end-cheki-canvas"></canvas>
+                    <canvas id="end-cheki-canvas" style="display:none;"></canvas>
+                    <img id="end-cheki-img" style="display:none; max-width:100%; max-height:45dvh; object-fit:contain; -webkit-touch-callout:default !important;" alt="">
+                    <img id="end-cheki-img" style="display:none;width:100%;-webkit-touch-callout:default !important;" alt="">
                 </div>
                 <p style="font-family:'Share Tech Mono',monospace;font-size:11px;color:rgba(255,255,255,.7);letter-spacing:.1em;text-align:center;">長押しで保存できます</p>
                 <div class="end-share-btns">
@@ -1517,7 +1519,10 @@ async function buildEndCheki(){
     g.fillText('嘘シャニマス聖地合同／パフェコミ', W - pad - 16, rightBottomY);
 
     document.getElementById('end-cheki-placeholder').style.display = 'none';
-    canvas.style.display = 'block';
+    const url = canvas.toDataURL('image/jpeg', 0.92);
+    const img = document.getElementById('end-cheki-img');
+    img.src = url;
+    img.style.display = 'block';
     endChekiReady = true;
 }
 
