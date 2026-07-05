@@ -781,7 +781,9 @@ html, body{ height:100%; overflow:hidden; overscroll-behavior:none; }
                 <div class="cap-title">嘘シャニマス聖地合同</div>
                 <div class="cap-sub">シャッターを切って思い出を振り返ろう</div>
                 <button class="cap-ok" onclick="startExperience()">フォトモードを始める</button>
-
+                <div style="font-family:'Share Tech Mono',monospace;font-size:clamp(10px,2.8vw,12px);color:rgba(255,255,255,.45);letter-spacing:.1em;line-height:1.8;text-align:center;">
+                    スワイプ : 移動する<br>タップ : 撮影する
+                </div>
                 <a class="cap-yt" id="cap-yt" href="https://www.youtube.com/playlist?list=PLBkO5Qx_9Igw" target="_blank" rel="noopener">撮影をやめて YouTube で見る</a>
             </div>
         </div>
@@ -1396,7 +1398,7 @@ function backToFinder(spot){
         try{ vid.pause(); vid.src = ''; }catch(e){}
         // SS・ISO・検知ログをフェードアウト
         const camInfo = document.getElementById('mobile-cam-info');
-        const logEl = document.querySelector('.logarea');
+        const logEl = document.querySelector('.log');
         [camInfo, logEl].forEach(el=>{
             if(el){ el.style.transition='opacity 1.5s ease'; el.style.opacity='0'; }
         });
@@ -1669,7 +1671,7 @@ const _startExperienceOrig = startExperience;
 startExperience = function(){
     const wasCap = capOpen;
     _startExperienceOrig();
-    if(wasCap) setTimeout(showMobileHint, 500);
+    if(wasCap) {} // 操作説明はタイトル画面に表示済み
 };
 </script>
 </body>
