@@ -1319,7 +1319,11 @@ function closeEnding(){
     fade.classList.remove('fadein');
     document.getElementById('end-complete').classList.remove('visible');
     document.getElementById('endvid').pause();
-    location.reload();
+    try{ vid.pause(); vid.src=''; }catch(e){}
+    const blackout = document.createElement('div');
+    blackout.style.cssText = 'position:fixed;inset:0;background:#000;z-index:9999;';
+    document.body.appendChild(blackout);
+    setTimeout(()=>location.reload(), 100);
 }
 
 function openEndShare(){
