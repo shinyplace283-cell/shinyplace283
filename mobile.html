@@ -676,7 +676,7 @@ html, body{ height:100%; overflow:hidden; overscroll-behavior:none; }
         <div id="mobile-cam-info" style="position:absolute;bottom:0;left:0;right:0;height:var(--band-bottom, 13%);display:flex;align-items:center;justify-content:space-between;padding:0 4vw;z-index:131;pointer-events:none;">
             <!-- 左：ISO SS -->
             <div style="font-family:'Share Tech Mono',monospace;letter-spacing:.1em;line-height:1.7;display:flex;flex-direction:column;">
-                <div style="display:flex;gap:3vw;font-size:clamp(8px,2vw,10px);color:rgba(255,255,255,.4);">
+                <div style="display:flex;gap:3vw;font-size:clamp(8px,2vw,10px);color:rgba(255,255,255,.6);">
                     <span>ISO</span><span>SS</span>
                 </div>
                 <div style="display:flex;gap:3vw;font-size:clamp(10px,2.8vw,13px);color:rgba(255,255,255,.75);">
@@ -1650,7 +1650,7 @@ function showMobileHint(){
     const wrapper = document.getElementById('m-hint-wrapper');
     if(!wrapper || wrapper.dataset.shown) return;
     wrapper.dataset.shown = '1';
-    wrapper.innerHTML = 'スワイプ : 移動する<br>タップ &nbsp;&nbsp;&nbsp;: 撮影する';
+    wrapper.innerHTML = 'スワイプ : 移動する<br>タップ : 撮影する';
 }
 
 function hideMobileHint(){
