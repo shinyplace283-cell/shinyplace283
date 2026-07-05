@@ -1394,6 +1394,12 @@ function backToFinder(spot){
     if(viewed.size === SPOTS.length){
         endingOpen = true;
         try{ vid.pause(); vid.src = ''; }catch(e){}
+        // SS・ISO・検知ログをフェードアウト
+        const camInfo = document.getElementById('mobile-cam-info');
+        const logEl = document.querySelector('.logarea');
+        [camInfo, logEl].forEach(el=>{
+            if(el){ el.style.transition='opacity 1.5s ease'; el.style.opacity='0'; }
+        });
         const findfade = document.getElementById('findfade');
         findfade.style.opacity = '1';
         scr.classList.add('ending-active');
@@ -1663,7 +1669,7 @@ const _startExperienceOrig = startExperience;
 startExperience = function(){
     const wasCap = capOpen;
     _startExperienceOrig();
-    if(wasCap) setTimeout(showMobileHint, 1500);
+    if(wasCap) setTimeout(showMobileHint, 500);
 };
 </script>
 </body>
