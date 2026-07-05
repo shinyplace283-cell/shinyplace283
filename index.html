@@ -1241,6 +1241,15 @@ function backToFinder(spot){
         endingOpen = true;
         const findfade = document.getElementById('findfade');
         findfade.style.opacity = '1';
+        // 検知ログを暗転に合わせてフェードアウト
+        const logEl = document.querySelector('.log');
+        if(logEl){
+            const cur = window.getComputedStyle(logEl).opacity;
+            logEl.style.opacity = cur;
+            logEl.style.transition = 'opacity 1.5s ease';
+            requestAnimationFrame(()=>{ logEl.style.opacity = '0'; });
+        }
+        scr.classList.remove('play-log');
         scr.classList.add('ending-active');
         setTimeout(openEnding, 1600);
     }
