@@ -1215,7 +1215,8 @@ function fireFirstPresence(){
         if(done || playerOpen || capOpen) return; done = true;
         if(!afFiredThisSpot){ fire('play-af', POOL['play-af']); afFiredThisSpot = true; }
         fireLog();
-        nudgeExposure(); // 最初のスポットはSS・ISO変動を確定で発火
+        // 最初のスポットはSS・ISO変動を確定で発火（遅延させてclearFxを避ける）
+        setTimeout(()=>{ nudgeExposure(); }, 500);
     };
     if(vid.readyState >= 3){
         setTimeout(go, 200);
