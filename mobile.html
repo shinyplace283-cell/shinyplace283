@@ -681,7 +681,7 @@ html, body{ height:100%; overflow:hidden; overscroll-behavior:none; }
                 </div>
             </div>
             <!-- 右：操作説明 -->
-            <div id="m-hint-wrapper" style="font-family:'Share Tech Mono',monospace;font-size:clamp(9px,2.5vw,11px);color:rgba(255,255,255,.75);letter-spacing:.1em;line-height:1.7;text-align:right;"></div>
+            <div id="m-hint-wrapper" style="font-family:'Share Tech Mono',monospace;font-size:clamp(9px,2.5vw,11px);color:rgba(255,255,255,.75);letter-spacing:.1em;line-height:1.7;text-align:right;">スワイプ : 移動する<br>タップ : 撮影する</div>
         </div>
 
         <!-- ドットインジケーター（検知ログ下端と同じ高さ・画面中央） -->
@@ -781,9 +781,6 @@ html, body{ height:100%; overflow:hidden; overscroll-behavior:none; }
                 <div class="cap-title">嘘シャニマス聖地合同</div>
                 <div class="cap-sub">シャッターを切って思い出を振り返ろう</div>
                 <button class="cap-ok" onclick="startExperience()">フォトモードを始める</button>
-                <div style="font-family:'Share Tech Mono',monospace;font-size:clamp(10px,2.8vw,12px);color:rgba(255,255,255,.45);letter-spacing:.1em;line-height:1.8;text-align:center;">
-                    スワイプ : 移動する<br>タップ : 撮影する
-                </div>
                 <a class="cap-yt" id="cap-yt" href="https://www.youtube.com/playlist?list=PLBkO5Qx_9Igw" target="_blank" rel="noopener">撮影をやめて YouTube で見る</a>
             </div>
         </div>
@@ -1402,6 +1399,7 @@ function backToFinder(spot){
         [camInfo, logEl].forEach(el=>{
             if(el){ el.style.transition='opacity 1.5s ease'; el.style.opacity='0'; }
         });
+        scr.classList.remove('play-log');
         const findfade = document.getElementById('findfade');
         findfade.style.opacity = '1';
         scr.classList.add('ending-active');
@@ -1671,7 +1669,7 @@ const _startExperienceOrig = startExperience;
 startExperience = function(){
     const wasCap = capOpen;
     _startExperienceOrig();
-    if(wasCap) {} // 操作説明はタイトル画面に表示済み
+    if(wasCap) {} // 操作説明はHTML初期表示済み
 };
 </script>
 </body>
