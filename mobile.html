@@ -1155,8 +1155,7 @@ function slide(dir){
     showSpot(order[orderPos], true, dir);
     slideCount++;
     if(slideCount >= 8){
-        const mhint = document.getElementById('m-hint');
-        if(mhint) mhint.classList.remove('on');
+        hideMobileHint();
     }
 }
 
@@ -1315,8 +1314,7 @@ function shoot(){
     if(shootCount >= 2){
         const hint = document.getElementById('op-hint');
         if(hint) hint.classList.add('hidden');
-        const mhint = document.getElementById('m-hint');
-        if(mhint) mhint.classList.remove('on');
+        hideMobileHint();
     }
     setTimeout(()=>openPlayer(spot), 280);
 }
@@ -1632,7 +1630,7 @@ scheduleAmbient();
     }, { passive:true });
 })();
 
-// ── 開始直後の操作ヒント（一度だけ・自然に消える） ──
+// ── 開始直後の操作ヒント（常時表示・2回撮影か8回スライドで消える） ──
 function showMobileHint(){
     if(document.getElementById('m-hint')) return;
     const el = document.createElement('div');
@@ -1642,13 +1640,14 @@ function showMobileHint(){
         '<span class="k">タップ</span><span class="s">:</span><span class="d">撮影する</span>';
     scr.appendChild(el);
     requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add('on')));
-    setTimeout(()=>{
-        el.classList.remove('on');
-        setTimeout(()=>el.remove(), 900);
-    }, 3800);
 }
 
-// startExperience をラップ：暗転が明けたタイミングでヒントを出す
+function hideMobileHint(){
+    const mhint = document.getElementById('m-hint');
+    if(!mhint) return;
+    mhint.classList.remove('on');
+    setTimeout(()=>mhint.remove(), 900);
+}
 const _startExperienceOrig = startExperience;
 startExperience = function(){
     const wasCap = capOpen;
