@@ -412,27 +412,26 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
 .end-credits{
     display:flex; flex-direction:column;
     gap:clamp(14px,1.8cqh,22px);
-    width:fit-content;
     margin:0 auto clamp(24px,3cqh,40px);
+    width:fit-content;
 }
 .end-credit-row{
-    display:grid;
-    grid-template-columns:160px 120px;
-    gap:24px; align-items:start;
-    text-align:left;
+    display:flex; flex-direction:row;
+    align-items:start; gap:24px;
 }
 .end-credit-work{
     font-family:'Zen Kaku Gothic New',sans-serif;
     font-weight:700; font-size:clamp(12px,1.4cqw,15px);
     color:rgba(255,255,255,.92);
     letter-spacing:.04em; line-height:1.5;
+    text-align:left; min-width:140px; max-width:180px;
 }
 .end-credit-author{
     font-family:'Zen Kaku Gothic New',sans-serif;
     font-size:clamp(11px,1.3cqw,14px);
     color:rgba(255,255,255,.92);
     letter-spacing:.06em; line-height:1.5;
-    text-align:left;
+    text-align:left; min-width:80px;
 }
 .author-link{
     color:inherit; text-decoration:none;
