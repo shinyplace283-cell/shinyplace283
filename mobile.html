@@ -1215,12 +1215,13 @@ function fireFirstPresence(){
         if(done || playerOpen || capOpen) return; done = true;
         if(!afFiredThisSpot){ fire('play-af', POOL['play-af']); afFiredThisSpot = true; }
         fireLog();
+        nudgeExposure(); // 最初のスポットはSS・ISO変動を確定で発火
     };
-    if(vid.readyState >= 3){            // HAVE_FUTURE_DATA以上＝すでに再生できる
+    if(vid.readyState >= 3){
         setTimeout(go, 200);
     }else{
         vid.addEventListener('canplay', go, { once:true });
-        setTimeout(go, 6000);           // 念のための上限（極端な遅延時のフォールバック）
+        setTimeout(go, 6000);
     }
 }
 let shootCount = 0; // シャッター回数カウント（2回で操作ヒントを消す）
