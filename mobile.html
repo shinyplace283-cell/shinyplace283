@@ -673,15 +673,18 @@ html, body{ height:100%; overflow:hidden; overscroll-behavior:none; }
         <!-- レターボックス（上下の黒帯） -->
         <div class="letterbox lb-top"></div>
         <div class="letterbox lb-bottom"></div>
-        <div id="mobile-cam-info" style="position:absolute;bottom:0;left:0;height:var(--band-bottom, 13%);display:flex;align-items:center;padding:0 4vw;z-index:131;pointer-events:none;">
-            <div style="font-family:'Share Tech Mono',monospace;font-size:clamp(8px,2.2vw,10px);color:rgba(255,255,255,.4);letter-spacing:.1em;line-height:1.6;">
-                <div style="display:flex;gap:3vw;">
+        <div id="mobile-cam-info" style="position:absolute;bottom:0;left:0;right:0;height:var(--band-bottom, 13%);display:flex;align-items:center;justify-content:space-between;padding:0 4vw;z-index:131;pointer-events:none;">
+            <!-- 左：ISO SS -->
+            <div style="font-family:'Share Tech Mono',monospace;letter-spacing:.1em;line-height:1.7;display:flex;flex-direction:column;">
+                <div style="display:flex;gap:3vw;font-size:clamp(8px,2vw,10px);color:rgba(255,255,255,.4);">
                     <span>ISO</span><span>SS</span>
                 </div>
-                <div style="display:flex;gap:3vw;">
+                <div style="display:flex;gap:3vw;font-size:clamp(10px,2.8vw,13px);color:rgba(255,255,255,.75);">
                     <span id="m-iso">412</span><span>1/<span id="m-ss">283</span></span>
                 </div>
             </div>
+            <!-- 右：操作説明 -->
+            <div id="m-hint-wrapper" style="font-family:'Share Tech Mono',monospace;font-size:clamp(9px,2.5vw,11px);color:rgba(255,255,255,.75);letter-spacing:.1em;line-height:1.7;text-align:right;"></div>
         </div>
 
         <!-- ドットインジケーター（検知ログ下端と同じ高さ・画面中央） -->
@@ -1644,21 +1647,18 @@ scheduleAmbient();
 
 // ── 開始直後の操作ヒント（常時表示・2回撮影か8回スライドで消える） ──
 function showMobileHint(){
-    if(document.getElementById('m-hint')) return;
-    const el = document.createElement('div');
-    el.id = 'm-hint';
-    el.innerHTML =
-        '<span class="k">スワイプ</span><span class="s">:</span><span class="d">移動する</span>' +
-        '<span class="k">タップ</span><span class="s">:</span><span class="d">撮影する</span>';
-    scr.appendChild(el);
-    requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add('on')));
+    const wrapper = document.getElementById('m-hint-wrapper');
+    if(!wrapper || wrapper.dataset.shown) return;
+    wrapper.dataset.shown = '1';
+    wrapper.innerHTML = 'スワイプ : 移動する<br>タップ &nbsp;&nbsp;&nbsp;: 撮影する';
 }
 
 function hideMobileHint(){
-    const mhint = document.getElementById('m-hint');
-    if(!mhint) return;
-    mhint.classList.remove('on');
-    setTimeout(()=>mhint.remove(), 900);
+    const wrapper = document.getElementById('m-hint-wrapper');
+    if(!wrapper) return;
+    wrapper.style.transition = 'opacity .8s ease';
+    wrapper.style.opacity = '0';
+    setTimeout(()=>{ wrapper.innerHTML = ''; wrapper.style.opacity = ''; delete wrapper.dataset.shown; }, 900);
 }
 const _startExperienceOrig = startExperience;
 startExperience = function(){
