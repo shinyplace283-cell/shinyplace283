@@ -378,6 +378,7 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
     color:rgba(255,255,255,0);
     text-align:center;
     transition:color .7s ease;
+    margin-top:4px;
 }
 #end-complete.visible{ color:rgba(255,255,255,.82); }
 #end-content{
@@ -1396,9 +1397,13 @@ function backToFinder(spot){
         // SS・ISO・検知ログをフェードアウト
         const camInfo = document.getElementById('mobile-cam-info');
         const logEl = document.querySelector('.log');
-        [camInfo, logEl].forEach(el=>{
-            if(el){ el.style.transition='opacity 1.5s ease'; el.style.opacity='0'; }
-        });
+        if(camInfo){ camInfo.style.transition='opacity 1.5s ease'; camInfo.style.opacity='0'; }
+        if(logEl){
+            const currentOpacity = window.getComputedStyle(logEl).opacity;
+            logEl.style.opacity = currentOpacity;
+            logEl.style.transition = 'opacity 1.5s ease';
+            requestAnimationFrame(()=>{ logEl.style.opacity = '0'; });
+        }
         scr.classList.remove('play-log');
         const findfade = document.getElementById('findfade');
         findfade.style.opacity = '1';
