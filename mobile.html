@@ -1308,28 +1308,14 @@ function buildCheki(spot, frameURL, shotAt){
     });
 }
 
-function openXShare(shareText){
-    const encoded = encodeURIComponent(shareText);
-    const appUrl = `twitter://post?message=${encoded}`;
-    const webUrl = `https://twitter.com/intent/tweet?text=${encoded}`;
-    // アプリを試みる（iframeで開くのでタブが消えない）
-    const iframe = document.createElement('iframe');
-    iframe.style.display = 'none';
-    document.body.appendChild(iframe);
-    iframe.src = appUrl;
-    // 500ms後にアプリが起動しなかった場合はブラウザで開く
-    setTimeout(()=>{
-        document.body.removeChild(iframe);
-        window.open(webUrl, '_blank');
-    }, 500);
-}
-
 function setXShare(elId, spot){
     const authorPart = spot.handle ? `${spot.author} ${spot.handle}` : spot.author;
     const shareText = `${spot.rep}との思い出を振り返ったよ！\n（作者：${authorPart}）\n\n${SHARE_TAG}\n${SITE_URL}`;
     const el = document.getElementById(elId);
-    el.href = '#';
-    el.onclick = (e)=>{ e.preventDefault(); openXShare(shareText); };
+    el.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
+    el.target = '_blank';
+    el.rel = 'noopener';
+    el.onclick = null;
 }
 
 function shoot(){
@@ -1473,8 +1459,8 @@ function openEnding(){
     // X共有文
     const shareText = `すべての思い出を振り返ったよ！\n\n特別出演：櫻木真乃\n映像撮影：わこー @urata_wako\n\n${SHARE_TAG}\n${SITE_URL}`;
     const endXBtn = document.getElementById('end-cheki-x');
-    endXBtn.href = '#';
-    endXBtn.onclick = (e)=>{ e.preventDefault(); openXShare(shareText); };
+    endXBtn.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
+    endXBtn.onclick = null;
 
     // ① テキスト表示（300ms後）
     setTimeout(()=>{ complete.classList.add('visible'); }, 300);
