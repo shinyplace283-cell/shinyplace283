@@ -1062,6 +1062,7 @@ function fireFirstPresence(){
         if(done || playerOpen || capOpen) return; done = true;
         if(!afFiredThisSpot){ fire('play-af', POOL['play-af']); afFiredThisSpot = true; }
         fireLog();
+        setTimeout(()=>{ nudgeExposure(); }, 500);
     };
     if(vid.readyState >= 3){            // HAVE_FUTURE_DATA以上＝すでに再生できる
         setTimeout(go, 200);
@@ -1164,7 +1165,7 @@ function setXShare(elId, spot){
 }
 
 function shoot(){
-    if(playerOpen || afterglowOpen || capOpen || shutterLock) return;
+    if(playerOpen || afterglowOpen || capOpen || shutterLock || endingOpen) return;
     const frameURL = captureFrame();
     if(!frameURL) return;
     const spot = SPOTS[index];
@@ -1442,6 +1443,13 @@ if(isTouchDevice){
     const hint = document.getElementById('ag-longpress-hint');
     if(saveBtn) saveBtn.style.display = 'none';
     if(hint) hint.style.display = 'block';
+    // 操作ヒントの表記をタッチ向けに変更
+    const opHint = document.getElementById('op-hint');
+    if(opHint){
+        opHint.innerHTML =
+            '<span class="op-key">スワイプ</span><span class="op-sep">:</span><span class="op-desc">移動する</span>' +
+            '<span class="op-key">タップ</span><span class="op-sep">:</span><span class="op-desc">撮影する</span>';
+    }
 }
 
 // 初期化：未訪問優先のランダム順で最初の1枚を表示
