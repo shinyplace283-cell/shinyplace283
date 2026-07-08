@@ -1164,7 +1164,7 @@ function setXShare(elId, spot){
 }
 
 function shoot(){
-    if(playerOpen || afterglowOpen || capOpen || shutterLock) return;
+    if(playerOpen || afterglowOpen || capOpen || shutterLock || endingOpen) return;
     const frameURL = captureFrame();
     if(!frameURL) return;
     const spot = SPOTS[index];
