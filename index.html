@@ -219,7 +219,7 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
 .player .credit-title{ font-size:2.1cqh; color:#fff; letter-spacing:.06em; }
 .player .credit-author{ font-size:1.5cqh; color:rgba(255,255,255,.6); letter-spacing:.1em; }
 .player .pnote{ font-family:'Zen Kaku Gothic New',sans-serif; font-size:1.2cqh; color:rgba(255,255,255,.45); text-align:center; max-width:80%; line-height:1.6; }
-.player .pbtns, .afterglow .pbtns{ display:flex; gap:2vw; align-items:center; justify-content:center; width:100%; }
+.player .pbtns, .afterglow .pbtns{ display:flex; gap:2cqw; align-items:center; justify-content:center; width:100%; }
 .player .pyt, .player .pclose,
 .afterglow .pyt, .afterglow .pclose{ font-family:'Share Tech Mono',monospace; font-size:1.5cqh; letter-spacing:.1em;
     color:rgba(255,255,255,.85); background:none; border:1px solid rgba(255,255,255,.4); border-radius:3px;
@@ -644,7 +644,7 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
             <div class="frame"><iframe id="ytframe" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>
             <div class="credit"><span class="credit-title" id="credit-title">タイトル</span><span class="credit-author" id="credit-author">制作者</span></div>
             <div class="pbtns">
-                <button class="pyt pxshare" onclick="closePlayerToAfterglow()">撮影した写真を見る</button>
+                <button class="pyt pxshare" onclick="closePlayerToAfterglow()">思い出を共有する</button>
                 <button class="pclose" onclick="closePlayer()">撮影に戻る</button>
             </div>
             <p class="pnote"><a class="cap-yt" href="https://www.youtube.com/playlist?list=PLBkO5Qx_9Igw" target="_blank" rel="noopener">YouTube でまとめて見る</a></p>
@@ -701,8 +701,8 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
 </div>
 
 <script>
-// タッチデバイス（スマホ・タブレット）は mobile.html へ自動振り分け
-if(/iPhone|iPad|Android/i.test(navigator.userAgent) || ('ontouchstart' in window && navigator.maxTouchPoints > 0)){
+// スマホは mobile.html へ自動振り分け
+if(/iPhone|Android/i.test(navigator.userAgent)){
     location.replace('mobile.html');
 }
 const _pad = n => String(n).padStart(2,'0');
@@ -1062,7 +1062,6 @@ function fireFirstPresence(){
         if(done || playerOpen || capOpen) return; done = true;
         if(!afFiredThisSpot){ fire('play-af', POOL['play-af']); afFiredThisSpot = true; }
         fireLog();
-        setTimeout(()=>{ nudgeExposure(); }, 500);
     };
     if(vid.readyState >= 3){            // HAVE_FUTURE_DATA以上＝すでに再生できる
         setTimeout(go, 200);
@@ -1165,7 +1164,7 @@ function setXShare(elId, spot){
 }
 
 function shoot(){
-    if(playerOpen || afterglowOpen || capOpen || shutterLock || endingOpen) return;
+    if(playerOpen || afterglowOpen || capOpen || shutterLock) return;
     const frameURL = captureFrame();
     if(!frameURL) return;
     const spot = SPOTS[index];
@@ -1436,14 +1435,13 @@ document.addEventListener('touchend', e=>{
     if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>40){ slide(dx<0?1:-1); }
 },{ passive:true });
 
-// タッチデバイス判定：iPad等では画像保存ボタンを隠し長押しヒントを表示
+// タッチデバイス（iPad等）ではボタン・操作説明表記をタッチ向けに変更
 const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 if(isTouchDevice){
     const saveBtn = document.getElementById('ag-save');
     const hint = document.getElementById('ag-longpress-hint');
     if(saveBtn) saveBtn.style.display = 'none';
     if(hint) hint.style.display = 'block';
-    // 操作ヒントの表記をタッチ向けに変更
     const opHint = document.getElementById('op-hint');
     if(opHint){
         opHint.innerHTML =
