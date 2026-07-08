@@ -706,6 +706,7 @@ if(/iPhone|Android/i.test(navigator.userAgent)){
     location.replace('mobile.html');
 }
 const _pad = n => String(n).padStart(2,'0');
+const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 // TIME：現在時刻を毎分更新（HH:MM）
 function updateClock(){
     const d=new Date();
@@ -1223,7 +1224,7 @@ async function openAfterglow(spot){
         img.src=chekiURL; img.style.display='';
         save.href=chekiURL;
         save.download = `${spot.filename}.jpg`;
-        save.style.display='';
+        save.style.display = isTouchDevice ? 'none' : '';
     }else{
         img.style.display='none';
         save.style.display='none';
@@ -1436,7 +1437,6 @@ document.addEventListener('touchend', e=>{
 },{ passive:true });
 
 // タッチデバイス（iPad等）ではボタン・操作説明表記をタッチ向けに変更
-const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 if(isTouchDevice){
     const saveBtn = document.getElementById('ag-save');
     const hint = document.getElementById('ag-longpress-hint');
