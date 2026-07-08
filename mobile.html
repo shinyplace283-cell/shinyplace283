@@ -260,8 +260,8 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
 .level .dot{ position:absolute; left:50%; top:50%; width:0.5cqw; height:0.5cqw; background:rgba(255,255,255,.8); border-radius:50%; transform:translate(-50%,-50%); }
 
 /* AF枠：通常は非表示。AF発動時だけ出現して点滅→ロック */
-.focusbox{ position:absolute; left:50%; top:50%; width:22%; height:32%; transform:translate(-50%,-50%); opacity:0; pointer-events:none; z-index:147; }
-.focusbox span{ position:absolute; width:1.3cqw; height:1.3cqw; border:0.22cqw solid rgba(255,255,255,.9); }
+.focusbox{ position:absolute; left:50%; top:50%; width:32vw; height:32vw; transform:translate(-50%,-50%); opacity:0; pointer-events:none; z-index:147; }
+.focusbox span{ position:absolute; width:2vw; height:2vw; border:0.4vw solid rgba(255,255,255,.9); }
 .focusbox .a{ top:0;left:0;border-right:0;border-bottom:0 } .focusbox .b{ top:0;right:0;border-left:0;border-bottom:0 }
 .focusbox .c{ bottom:0;left:0;border-right:0;border-top:0 } .focusbox .d{ bottom:0;right:0;border-left:0;border-top:0 }
 @keyframes afbox{ 0%{opacity:0; transform:translate(-50%,-50%) scale(1.25)} 12%{opacity:.95} 24%{opacity:.3} 38%{opacity:.95} 52%{opacity:.3} 64%{opacity:1; transform:translate(-50%,-50%) scale(1.0)} 86%{opacity:.9} 100%{opacity:0} }
@@ -378,6 +378,7 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
     color:rgba(255,255,255,0);
     text-align:center;
     transition:color .7s ease;
+    margin-top:24px;
 }
 #end-complete.visible{ color:rgba(255,255,255,.82); }
 #end-content{
@@ -412,27 +413,26 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
 .end-credits{
     display:flex; flex-direction:column;
     gap:clamp(14px,1.8cqh,22px);
-    width:100%; max-width:380px;
     margin:0 auto clamp(24px,3cqh,40px);
-    padding-left:24px;
+    width:fit-content;
 }
 .end-credit-row{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:24px; align-items:start;
-    width:100%; text-align:left;
+    display:flex; flex-direction:row;
+    align-items:start; gap:24px;
 }
 .end-credit-work{
     font-family:'Zen Kaku Gothic New',sans-serif;
     font-weight:700; font-size:clamp(12px,1.4cqw,15px);
     color:rgba(255,255,255,.92);
     letter-spacing:.04em; line-height:1.5;
+    text-align:left; min-width:140px; max-width:180px;
 }
 .end-credit-author{
     font-family:'Zen Kaku Gothic New',sans-serif;
     font-size:clamp(11px,1.3cqw,14px);
     color:rgba(255,255,255,.92);
     letter-spacing:.06em; line-height:1.5;
+    text-align:left; min-width:80px;
 }
 .author-link{
     color:inherit; text-decoration:none;
@@ -516,6 +516,18 @@ html, body{ height:100%; overflow:hidden; overscroll-behavior:none; }
 .op-hint{ display:none !important; }
 .cap-tutorial{ display:none !important; }
 
+/* ag-photoは長押し保存を許可 */
+.ag-photo, #end-cheki-canvas{
+    -webkit-touch-callout:default !important;
+    -webkit-user-select:auto !important;
+    user-select:auto !important;
+    pointer-events:auto !important;
+}
+
+/* 時計・電池を非表示 */
+.hud .bar.top .cluster.right .item:not(:last-child),
+.hud .bar.top .batt2{ display:none !important; }
+
 /* ── 下バーの撮影設定値（SS/F/ISO/EV・WB/FORMAT・波形）は非表示 ── */
 .hud .bar.bottom .cluster.left,
 .hud .bar.bottom .cluster.right{ display:none; }
@@ -531,19 +543,21 @@ html, body{ height:100%; overflow:hidden; overscroll-behavior:none; }
 
 /* ── スワイプ／タップ ヒント（開始直後に一度だけ） ── */
 #m-hint{
-    position:absolute; left:50%; top:56%; transform:translate(-50%,-50%);
+    position:absolute;
+    right:5vw; bottom:4%;
+    transform:none; left:auto; top:auto;
     z-index:180; pointer-events:none;
-    display:grid; grid-template-columns:auto auto auto; gap:10px 0;
+    display:grid; grid-template-columns:auto auto auto; gap:3px 0;
     align-items:center;
-    font-family:'Zen Kaku Gothic New',sans-serif;
-    font-size:14px; letter-spacing:.14em;
-    color:rgba(255,255,255,.92);
-    text-shadow:0 1px 12px rgba(0,0,0,.95);
+    font-family:'Share Tech Mono',monospace;
+    font-size:clamp(9px,2.5vw,11px); letter-spacing:.1em;
+    color:rgba(255,255,255,.5);
+    text-shadow:0 1px 8px rgba(0,0,0,.95);
     opacity:0; transition:opacity .8s ease;
 }
 #m-hint.on{ opacity:1; }
 #m-hint .k{ text-align:right; }
-#m-hint .s{ text-align:center; color:rgba(255,255,255,.4); padding:0 8px; }
+#m-hint .s{ text-align:center; color:rgba(255,255,255,.25); padding:0 5px; }
 #m-hint .d{ text-align:left; }
 
 /* ── 縦向きスマホのレイアウト ── */
@@ -657,6 +671,19 @@ html, body{ height:100%; overflow:hidden; overscroll-behavior:none; }
         <!-- レターボックス（上下の黒帯） -->
         <div class="letterbox lb-top"></div>
         <div class="letterbox lb-bottom"></div>
+        <div id="mobile-cam-info" style="position:absolute;bottom:0;left:0;right:0;height:var(--band-bottom, 13%);display:flex;align-items:center;justify-content:space-between;padding:0 4vw;z-index:131;pointer-events:none;">
+            <!-- 左：ISO SS -->
+            <div style="font-family:'Share Tech Mono',monospace;letter-spacing:.1em;line-height:1.7;display:flex;flex-direction:column;">
+                <div style="display:flex;gap:3vw;font-size:clamp(8px,2vw,10px);color:rgba(255,255,255,.6);">
+                    <span>ISO</span><span>SS</span>
+                </div>
+                <div style="display:flex;gap:3vw;font-size:clamp(10px,2.8vw,13px);color:rgba(255,255,255,.75);">
+                    <span id="m-iso">412</span><span>1/<span id="m-ss">283</span></span>
+                </div>
+            </div>
+            <!-- 右：操作説明 -->
+            <div id="m-hint-wrapper" style="font-family:'Share Tech Mono',monospace;font-size:clamp(9px,2.5vw,11px);color:rgba(255,255,255,.75);letter-spacing:.1em;line-height:1.7;text-align:right;">スワイプ : 移動する<br>タップ : 撮影する</div>
+        </div>
 
         <!-- ドットインジケーター（検知ログ下端と同じ高さ・画面中央） -->
         <div class="dot-indicator" id="dot-indicator">
@@ -755,7 +782,6 @@ html, body{ height:100%; overflow:hidden; overscroll-behavior:none; }
                 <div class="cap-title">嘘シャニマス聖地合同</div>
                 <div class="cap-sub">シャッターを切って思い出を振り返ろう</div>
                 <button class="cap-ok" onclick="startExperience()">フォトモードを始める</button>
-
                 <a class="cap-yt" id="cap-yt" href="https://www.youtube.com/playlist?list=PLBkO5Qx_9Igw" target="_blank" rel="noopener">撮影をやめて YouTube で見る</a>
             </div>
         </div>
@@ -773,13 +799,12 @@ html, body{ height:100%; overflow:hidden; overscroll-behavior:none; }
 
         <!-- 余韻画面：見終わった後、撮ってきたチェキとともに共有 -->
         <div class="afterglow" id="afterglow">
-            <img id="ag-photo" class="ag-photo" alt="撮影したチェキ">
+            <img id="ag-photo" class="ag-photo" alt="">
+            <p style="font-family:'Share Tech Mono',monospace;font-size:11px;color:rgba(255,255,255,.7);letter-spacing:.1em;text-align:center;">長押しで保存できます</p>
             <div class="pbtns">
                 <a class="pyt pxshare" id="ag-xshare" href="#" target="_blank" rel="noopener">X を開く</a>
-                <a class="pyt" id="ag-save" href="#" download>画像を保存する</a>
                 <button class="pclose" onclick="closeAfterglow()">撮影に戻る</button>
             </div>
-
         </div>
 
         <!-- エンディング -->
@@ -806,11 +831,13 @@ html, body{ height:100%; overflow:hidden; overscroll-behavior:none; }
             <div id="end-share">
                 <div class="end-share-cheki">
                     <div class="end-share-placeholder" id="end-cheki-placeholder">画像を生成中…<br>櫻木真乃（特別出演・作者：わこー）</div>
-                    <canvas id="end-cheki-canvas"></canvas>
+                    <canvas id="end-cheki-canvas" style="display:none;"></canvas>
+                    <img id="end-cheki-img" style="display:none; max-width:100%; max-height:45dvh; object-fit:contain; -webkit-touch-callout:default !important;" alt="">
+                    <img id="end-cheki-img" style="display:none;width:100%;-webkit-touch-callout:default !important;" alt="">
                 </div>
+                <p style="font-family:'Share Tech Mono',monospace;font-size:11px;color:rgba(255,255,255,.7);letter-spacing:.1em;text-align:center;">長押しで保存できます</p>
                 <div class="end-share-btns">
-                    <button class="end-btn primary" onclick="saveEndCheki()">画像を保存する</button>
-                    <a class="end-btn" id="end-cheki-x" href="#" target="_blank" rel="noopener">X を開く</a>
+                    <a class="end-btn primary" id="end-cheki-x" href="#" target="_blank" rel="noopener">X を開く</a>
                 </div>
                 <button class="end-share-back" onclick="closeEndShare()">← 戻る</button>
             </div>
@@ -860,6 +887,8 @@ function nudgeExposure(){
     const mag = 1 + Math.floor(Math.random()*2);
     settleExposure('ss',  SS_VALS,  SS_BASE,  dir, mag);
     settleExposure('iso', ISO_VALS, ISO_BASE, dir, mag);
+    settleExposure('m-ss',  SS_VALS,  SS_BASE,  dir, mag);
+    settleExposure('m-iso', ISO_VALS, ISO_BASE, dir, mag);
     jiggleEV(dir, mag);
 }
 
@@ -1130,11 +1159,16 @@ function firePresence(){
     if(!playerOpen) fire('play-wave', POOL['play-wave']);
 }
 
+let slideCount = 0;
 function slide(dir){
     if(capOpen || playerOpen || afterglowOpen || endingOpen) return;
     if(order.length===0) buildOrder();
     orderPos = (orderPos + dir + order.length) % order.length;
     showSpot(order[orderPos], true, dir);
+    slideCount++;
+    if(slideCount >= 8){
+        hideMobileHint();
+    }
 }
 
 function goFs(){
@@ -1178,12 +1212,14 @@ function fireFirstPresence(){
         if(done || playerOpen || capOpen) return; done = true;
         if(!afFiredThisSpot){ fire('play-af', POOL['play-af']); afFiredThisSpot = true; }
         fireLog();
+        // 最初のスポットはSS・ISO変動を確定で発火（遅延させてclearFxを避ける）
+        setTimeout(()=>{ nudgeExposure(); }, 500);
     };
-    if(vid.readyState >= 3){            // HAVE_FUTURE_DATA以上＝すでに再生できる
+    if(vid.readyState >= 3){
         setTimeout(go, 200);
     }else{
         vid.addEventListener('canplay', go, { once:true });
-        setTimeout(go, 6000);           // 念のための上限（極端な遅延時のフォールバック）
+        setTimeout(go, 6000);
     }
 }
 let shootCount = 0; // シャッター回数カウント（2回で操作ヒントを消す）
@@ -1276,10 +1312,15 @@ function openXShare(shareText){
     const encoded = encodeURIComponent(shareText);
     const appUrl = `twitter://post?message=${encoded}`;
     const webUrl = `https://twitter.com/intent/tweet?text=${encoded}`;
-    const start = Date.now();
-    window.location.href = appUrl;
+    // アプリを試みる（iframeで開くのでタブが消えない）
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+    iframe.src = appUrl;
+    // 500ms後にアプリが起動しなかった場合はブラウザで開く
     setTimeout(()=>{
-        if(Date.now() - start < 2000){ window.open(webUrl, '_blank'); }
+        document.body.removeChild(iframe);
+        window.open(webUrl, '_blank');
     }, 500);
 }
 
@@ -1292,7 +1333,7 @@ function setXShare(elId, spot){
 }
 
 function shoot(){
-    if(playerOpen || afterglowOpen || capOpen || shutterLock) return;
+    if(playerOpen || afterglowOpen || capOpen || shutterLock || endingOpen) return;
     const frameURL = captureFrame();
     if(!frameURL) return;
     const spot = SPOTS[index];
@@ -1304,6 +1345,7 @@ function shoot(){
     if(shootCount >= 2){
         const hint = document.getElementById('op-hint');
         if(hint) hint.classList.add('hidden');
+        hideMobileHint();
     }
     setTimeout(()=>openPlayer(spot), 280);
 }
@@ -1368,6 +1410,18 @@ function backToFinder(spot){
     document.getElementById('status').textContent = spot.file + '（CAPTURED）';
     if(viewed.size === SPOTS.length){
         endingOpen = true;
+        try{ vid.pause(); vid.src = ''; }catch(e){}
+        // SS・ISO・検知ログをフェードアウト
+        const camInfo = document.getElementById('mobile-cam-info');
+        const logEl = document.querySelector('.log');
+        if(camInfo){ camInfo.style.transition='opacity 1.5s ease'; camInfo.style.opacity='0'; }
+        if(logEl){
+            const currentOpacity = window.getComputedStyle(logEl).opacity;
+            logEl.style.opacity = currentOpacity;
+            logEl.style.transition = 'opacity 1.5s ease';
+            requestAnimationFrame(()=>{ logEl.style.opacity = '0'; });
+        }
+        scr.classList.remove('play-log');
         const findfade = document.getElementById('findfade');
         findfade.style.opacity = '1';
         scr.classList.add('ending-active');
@@ -1449,7 +1503,12 @@ function closeEnding(){
     fade.classList.remove('fadein');
     document.getElementById('end-complete').classList.remove('visible');
     document.getElementById('endvid').pause();
-    location.reload();
+    try{ vid.pause(); vid.src=''; }catch(e){}
+    // 黒画面を被せてからリロード
+    const blackout = document.createElement('div');
+    blackout.style.cssText = 'position:fixed;inset:0;background:#000;z-index:9999;';
+    document.body.appendChild(blackout);
+    setTimeout(()=>location.reload(), 100);
 }
 
 function openEndShare(){
@@ -1517,7 +1576,10 @@ async function buildEndCheki(){
     g.fillText('嘘シャニマス聖地合同／パフェコミ', W - pad - 16, rightBottomY);
 
     document.getElementById('end-cheki-placeholder').style.display = 'none';
-    canvas.style.display = 'block';
+    const url = canvas.toDataURL('image/jpeg', 0.92);
+    const img = document.getElementById('end-cheki-img');
+    img.src = url;
+    img.style.display = 'block';
     endChekiReady = true;
 }
 
@@ -1615,28 +1677,26 @@ scheduleAmbient();
     }, { passive:true });
 })();
 
-// ── 開始直後の操作ヒント（一度だけ・自然に消える） ──
+// ── 開始直後の操作ヒント（常時表示・2回撮影か8回スライドで消える） ──
 function showMobileHint(){
-    if(document.getElementById('m-hint')) return;
-    const el = document.createElement('div');
-    el.id = 'm-hint';
-    el.innerHTML =
-        '<span class="k">スワイプ</span><span class="s">:</span><span class="d">移動する</span>' +
-        '<span class="k">タップ</span><span class="s">:</span><span class="d">撮影する</span>';
-    scr.appendChild(el);
-    requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add('on')));
-    setTimeout(()=>{
-        el.classList.remove('on');
-        setTimeout(()=>el.remove(), 900);
-    }, 3800);
+    const wrapper = document.getElementById('m-hint-wrapper');
+    if(!wrapper || wrapper.dataset.shown) return;
+    wrapper.dataset.shown = '1';
+    wrapper.innerHTML = 'スワイプ : 移動する<br>タップ : 撮影する';
 }
 
-// startExperience をラップ：暗転が明けたタイミングでヒントを出す
+function hideMobileHint(){
+    const wrapper = document.getElementById('m-hint-wrapper');
+    if(!wrapper) return;
+    wrapper.style.transition = 'opacity .8s ease';
+    wrapper.style.opacity = '0';
+    setTimeout(()=>{ wrapper.innerHTML = ''; wrapper.style.opacity = ''; delete wrapper.dataset.shown; }, 900);
+}
 const _startExperienceOrig = startExperience;
 startExperience = function(){
     const wasCap = capOpen;
     _startExperienceOrig();
-    if(wasCap) setTimeout(showMobileHint, 1500);
+    if(wasCap) {} // 操作説明はHTML初期表示済み
 };
 </script>
 </body>
