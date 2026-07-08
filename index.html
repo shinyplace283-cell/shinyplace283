@@ -701,8 +701,8 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
 </div>
 
 <script>
-// スマホは mobile.html へ自動振り分け
-if(/iPhone|Android/i.test(navigator.userAgent)){
+// タッチデバイス（スマホ・タブレット）は mobile.html へ自動振り分け
+if(/iPhone|iPad|Android/i.test(navigator.userAgent) || ('ontouchstart' in window && navigator.maxTouchPoints > 0)){
     location.replace('mobile.html');
 }
 const _pad = n => String(n).padStart(2,'0');
