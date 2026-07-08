@@ -1311,21 +1311,11 @@ function buildCheki(spot, frameURL, shotAt){
 function setXShare(elId, spot){
     const authorPart = spot.handle ? `${spot.author} ${spot.handle}` : spot.author;
     const shareText = `${spot.rep}との思い出を振り返ったよ！\n（作者：${authorPart}）\n\n${SHARE_TAG}\n${SITE_URL}`;
-    const encoded = encodeURIComponent(shareText);
     const el = document.getElementById(elId);
-    el.href = '#';
-    el.onclick = (e)=>{
-        e.preventDefault();
-        const appUrl = `twitter://post?message=${encoded}`;
-        const webUrl = `https://twitter.com/intent/tweet?text=${encoded}`;
-        const a = document.createElement('a');
-        a.href = appUrl;
-        a.style.display = 'none';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        setTimeout(()=>{ window.open(webUrl, '_blank'); }, 600);
-    };
+    el.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
+    el.target = '_blank';
+    el.rel = 'noopener';
+    el.onclick = null;
 }
 
 function shoot(){
@@ -1468,21 +1458,11 @@ function openEnding(){
 
     // X共有文
     const shareText = `すべての思い出を振り返ったよ！\n\n特別出演：櫻木真乃\n映像撮影：わこー @urata_wako\n\n${SHARE_TAG}\n${SITE_URL}`;
-    const encoded = encodeURIComponent(shareText);
     const endXBtn = document.getElementById('end-cheki-x');
-    endXBtn.href = '#';
-    endXBtn.onclick = (e)=>{
-        e.preventDefault();
-        const appUrl = `twitter://post?message=${encoded}`;
-        const webUrl = `https://twitter.com/intent/tweet?text=${encoded}`;
-        const a = document.createElement('a');
-        a.href = appUrl;
-        a.style.display = 'none';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        setTimeout(()=>{ window.open(webUrl, '_blank'); }, 600);
-    };
+    endXBtn.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
+    endXBtn.target = '_blank';
+    endXBtn.rel = 'noopener';
+    endXBtn.onclick = null;
 
     // ① テキスト表示（300ms後）
     setTimeout(()=>{ complete.classList.add('visible'); }, 300);
