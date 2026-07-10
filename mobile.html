@@ -203,6 +203,13 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
 /* タイトル中はシャッターボタンを見せたまま機能だけ無効（押せないと分かる程度に減光） */
 .capon .shutter{ pointer-events:none; opacity:.5; }
 
+/* エンディングでのシャッター誘導点滅 */
+@keyframes shutterPulse{
+    0%, 100%{ opacity:1; transform:scale(1); filter:drop-shadow(0 0 0 rgba(255,255,255,0)); }
+    50%{ opacity:.4; transform:scale(1.12); filter:drop-shadow(0 0 16px rgba(255,255,255,.9)); }
+}
+.shutter.pulse{ animation:shutterPulse 1.6s ease-in-out infinite; }
+
 /* コミュ再生オーバーレイ */
 .player{ position:absolute; inset:0; background:#000; z-index:200; display:none;
     flex-direction:column; align-items:center; justify-content:center; gap:1.6cqh; padding:3cqh 4cqw; }
@@ -274,7 +281,7 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
 
 /* B：オーディオ反応 */
 .play-wave .wave i{ animation:wv .9s ease-in-out; }
-@keyframes wv{ 0%,100%{height:3px} 30%{height:13px} 45%{height:6px} 60%{height:11px} 80%{height:4px} }
+@keyframes wv{ 0%,100%{height:3px} 30%{height:var(--gust-h, 13px)} 45%{height:calc(var(--gust-h, 13px) * 0.5)} 60%{height:calc(var(--gust-h, 13px) * 0.85)} 80%{height:4px} }
 .play-wave .wave i:nth-child(2){animation-delay:.05s}.play-wave .wave i:nth-child(3){animation-delay:.1s}
 .play-wave .wave i:nth-child(4){animation-delay:.08s}.play-wave .wave i:nth-child(5){animation-delay:.12s}.play-wave .wave i:nth-child(6){animation-delay:.14s}.play-wave .wave i:nth-child(7){animation-delay:.07s}
 
@@ -388,9 +395,10 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
     width:100%; max-width:480px;
     padding:0 32px;
     opacity:0;
+    pointer-events:none;
     transition:opacity 1s ease;
 }
-#end-content.visible{ opacity:1; }
+#end-content.visible{ opacity:1; pointer-events:auto; }
 .end-header{
     display:flex; flex-direction:column;
     align-items:center; gap:5px;
@@ -463,7 +471,7 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
     border:1px solid rgba(255,255,255,.28); border-radius:3px;
     padding:11px 20px; cursor:pointer;
     text-decoration:none; text-align:center;
-    transition:.2s; width:100%; pointer-events:auto;
+    transition:.2s; width:100%;
 }
 .end-btn:hover{ border-color:rgba(255,255,255,.75); background:rgba(255,255,255,.07); color:#fff; }
 .end-btn.primary{ border-color:rgba(255,255,255,.52); color:rgba(255,255,255,.95); }
@@ -779,6 +787,7 @@ html, body{ height:100%; overflow:hidden; overscroll-behavior:none; }
         <!-- タイトル（中央・HUDより前面）。OKで消える -->
         <div class="capui" id="capui">
             <div class="capui-inner">
+                <div class="end-date">2026.7.18-7.19 <span style="letter-spacing:.32em">パフェコミ</span></div>
                 <div class="cap-title">嘘シャニマス聖地合同</div>
                 <div class="cap-sub">シャッターを切って思い出を振り返ろう</div>
                 <button class="cap-ok" onclick="startExperience()">フォトモードを始める</button>
@@ -811,6 +820,8 @@ html, body{ height:100%; overflow:hidden; overscroll-behavior:none; }
         <div id="ending">
             <video id="endvid" src="wako_end.mov" muted playsinline loop></video>
             <div id="endveil"></div>
+            <div class="letterbox lb-top" id="end-lb-top" style="z-index:1;"></div>
+            <div class="letterbox lb-bottom" id="end-lb-bottom" style="z-index:1;"></div>
             <div id="endfade">
                 <div id="end-complete">ALL MEMORIES CAPTURED</div>
             </div>
@@ -823,14 +834,13 @@ html, body{ height:100%; overflow:hidden; overscroll-behavior:none; }
                 <div class="end-credits" id="end-credits"></div>
                 <div class="end-divider"></div>
                 <div class="end-btns">
-                    <button class="end-btn primary" onclick="openEndShare()">感想を共有する</button>
                     <button class="end-btn muted" onclick="closeEnding()">タイトルに戻る</button>
                 </div>
             </div>
 
             <div id="end-share">
                 <div class="end-share-cheki">
-                    <div class="end-share-placeholder" id="end-cheki-placeholder">画像を生成中…<br>櫻木真乃（特別出演・作者：わこー）</div>
+                    <div class="end-share-placeholder" id="end-cheki-placeholder">画像を生成中…<br>櫻木真乃（特別協力・作者：わこー）</div>
                     <canvas id="end-cheki-canvas" style="display:none;"></canvas>
                     <img id="end-cheki-img" style="display:none; max-width:100%; max-height:45dvh; object-fit:contain; -webkit-touch-callout:default !important;" alt="">
                     <img id="end-cheki-img" style="display:none;width:100%;-webkit-touch-callout:default !important;" alt="">
@@ -1319,7 +1329,17 @@ function setXShare(elId, spot){
 }
 
 function shoot(){
-    if(playerOpen || afterglowOpen || capOpen || shutterLock || endingOpen) return;
+    if(endingOpen){
+        if(document.getElementById('ending').classList.contains('open') &&
+           document.getElementById('end-content').classList.contains('visible')){
+            scr.classList.remove('flashing'); void scr.offsetWidth; scr.classList.add('flashing');
+            const sh = document.getElementById('shutter');
+            if(sh) sh.classList.remove('pulse');
+            setTimeout(()=>openEndShare(), 280);
+        }
+        return;
+    }
+    if(playerOpen || afterglowOpen || capOpen || shutterLock) return;
     const frameURL = captureFrame();
     if(!frameURL) return;
     const spot = SPOTS[index];
@@ -1368,7 +1388,6 @@ function closePlayerToAfterglow(){
 async function openAfterglow(spot){
     afterglowOpen = true;
     const img=document.getElementById('ag-photo');
-    const save=document.getElementById('ag-save');
     setXShare('ag-xshare', spot);
     document.getElementById('afterglow').classList.add('open');
     img.removeAttribute('src');
@@ -1377,12 +1396,8 @@ async function openAfterglow(spot){
     }
     if(chekiURL){
         img.src=chekiURL; img.style.display='';
-        save.href=chekiURL;
-        save.download = `${spot.filename}.jpg`;
-        save.style.display='';
     }else{
         img.style.display='none';
-        save.style.display='none';
     }
 }
 function closeAfterglow(){
@@ -1457,7 +1472,7 @@ function openEnding(){
     endVid.play().catch(()=>{});
 
     // X共有文
-    const shareText = `すべての思い出を振り返ったよ！\n\n特別出演：櫻木真乃\n映像撮影：わこー @urata_wako\n\n${SHARE_TAG}\n${SITE_URL}`;
+    const shareText = `すべての思い出を振り返ったよ！\n（作者：わこー @urata_wako）\n\n${SHARE_TAG}\n${SITE_URL}`;
     const endXBtn = document.getElementById('end-cheki-x');
     endXBtn.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
     endXBtn.target = '_blank';
@@ -1474,15 +1489,47 @@ function openEnding(){
         setTimeout(()=>{ scr.classList.remove('captured','fading'); }, 800);
     }, 4000);
 
-    // ③ フェードイン（4.5s後・1.2sかけて）
-    setTimeout(()=>{ fade.classList.add('fadein'); }, 4500);
+    // ③ フェードイン（4.5s後・1.2sかけて）— 動画が見え始める瞬間に波形の風を開始
+    setTimeout(()=>{
+        fade.classList.add('fadein');
+        startEndingWave();
+    }, 4500);
 
     // ④ クレジット表示（7.0s後 ← 0.9s早め）
-    setTimeout(()=>{ document.getElementById('end-content').classList.add('visible'); }, 7000);
+    setTimeout(()=>{
+        document.getElementById('end-content').classList.add('visible');
+        const sh = document.getElementById('shutter');
+        if(sh) sh.classList.add('pulse');
+    }, 7000);
+}
+
+// エンディング中：浜辺の風を思わせる波形の揺れ（ランダムな強弱で継続）
+let endingWaveTimer = null;
+function startEndingWave(){
+    stopEndingWave();
+    const bars = document.querySelectorAll('.wave i');
+    const tick = ()=>{
+        if(!endingOpen) return;
+        bars.forEach(bar=>{
+            const h = 3 + Math.random()*14;
+            const delay = Math.random()*0.15;
+            bar.style.setProperty('--gust-h', `${h}px`);
+            bar.style.animationDelay = `${delay}s`;
+        });
+        scr.classList.remove('play-wave'); void scr.offsetWidth; scr.classList.add('play-wave');
+        const gustStrength = Math.random();
+        const nextDelay = gustStrength < 0.3 ? 1800 + Math.random()*1400 : 400 + Math.random()*700;
+        endingWaveTimer = setTimeout(tick, nextDelay);
+    };
+    tick();
+}
+function stopEndingWave(){
+    if(endingWaveTimer){ clearTimeout(endingWaveTimer); endingWaveTimer = null; }
 }
 
 function closeEnding(){
     endingOpen = false;
+    stopEndingWave();
     endChekiReady = false;
     document.getElementById('ending').classList.remove('open');
     document.getElementById('end-share').classList.remove('open');
@@ -1541,7 +1588,7 @@ async function buildEndCheki(){
     g.fillText(date, pad + imgW - 16, pad + imgH - 12);
     g.shadowBlur = 0;
 
-    // 櫻木真乃（タイトル行）・特別出演（アイドル行）
+    // 櫻木真乃（タイトル行）・特別協力（アイドル行）
     g.textAlign = 'center';
     g.font = "24px 'Shippori Antique', sans-serif";
     g.fillStyle = '#2b2b2b';
@@ -1551,7 +1598,7 @@ async function buildEndCheki(){
     g.font = "18px 'Shippori Antique', sans-serif";
     g.fillStyle = '#777777';
     const idolY = bandMid + 34;
-    g.fillText('特別出演', W / 2, idolY);
+    g.fillText('特別協力', W / 2, idolY);
 
     // 右ブロック：作者上・企画下（通常チェキと同じ基準）
     const rightBottomY = idolY - 3;
@@ -1584,7 +1631,10 @@ window.addEventListener('keydown', e=>{
         if(e.code==='Space' || e.key==='Enter'){ e.preventDefault(); startExperience(); }
         return;
     }
-    if(endingOpen){ return; }
+    if(endingOpen){
+        if(e.code==='Space'){ e.preventDefault(); shoot(); }
+        return;
+    }
     if(afterglowOpen){ if(e.key==='Escape') closeAfterglow(); return; }
     if(playerOpen){ if(e.key==='Escape') closePlayer(); return; }
     if(e.key==='ArrowRight') slide(1);
@@ -1603,7 +1653,7 @@ function ambientExposureDrift(){
     nudgeExposure();
 }
 function ambientTick(){
-    if(!playerOpen && !capOpen && document.visibilityState==='visible' && vid.readyState>=3){
+    if(!playerOpen && !capOpen && !endingOpen && document.visibilityState==='visible' && vid.readyState>=3){
         const r = Math.random();
         if(r < 0.45)      firePresence();          // 波形がふと
         else if(r < 0.65) ambientExposureDrift();  // 露出がふと動く（AFと同程度の発生率に抑制）
