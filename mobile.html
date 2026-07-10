@@ -825,8 +825,6 @@ html, body{ height:100%; overflow:hidden; overscroll-behavior:none; }
                     <span id="m-iso">412</span><span>1/<span id="m-ss">283</span></span>
                 </div>
             </div>
-            <!-- 右：操作説明 -->
-            <div id="m-hint-wrapper" style="font-family:'Share Tech Mono',monospace;font-size:clamp(9px,2.5vw,11px);color:rgba(255,255,255,.75);letter-spacing:.1em;line-height:1.7;text-align:right;">スワイプ : 移動する<br>タップ : 撮影する</div>
         </div>
 
         <!-- ドットインジケーター（検知ログ下端と同じ高さ・画面中央） -->
@@ -1310,9 +1308,6 @@ function slide(dir){
     orderPos = (orderPos + dir + order.length) % order.length;
     showSpot(order[orderPos], true, dir);
     slideCount++;
-    if(slideCount >= 8){
-        hideMobileHint();
-    }
 }
 
 function goFs(){
@@ -1504,11 +1499,7 @@ function shoot(){
     lastShot = { frameURL, shotAt: new Date(), spot };
     chekiURL = null;
     scr.classList.remove('flashing'); void scr.offsetWidth; scr.classList.add('flashing');
-    // シャッター2回でヒントを消す
     shootCount++;
-    if(shootCount >= 2){
-        hideMobileHint();
-    }
     setTimeout(()=>openPlayer(spot), 280);
 }
 function openPlayer(spot){
@@ -1886,22 +1877,6 @@ scheduleAmbient();
         }
     }, { passive:true });
 })();
-
-// ── 開始直後の操作ヒント（常時表示・2回撮影か8回スライドで消える） ──
-function showMobileHint(){
-    const wrapper = document.getElementById('m-hint-wrapper');
-    if(!wrapper || wrapper.dataset.shown) return;
-    wrapper.dataset.shown = '1';
-    wrapper.innerHTML = 'スワイプ : 移動する<br>タップ : 撮影する';
-}
-
-function hideMobileHint(){
-    const wrapper = document.getElementById('m-hint-wrapper');
-    if(!wrapper) return;
-    wrapper.style.transition = 'opacity .8s ease';
-    wrapper.style.opacity = '0';
-    setTimeout(()=>{ wrapper.innerHTML = ''; wrapper.style.opacity = ''; delete wrapper.dataset.shown; }, 900);
-}
 const _startExperienceOrig = startExperience;
 startExperience = function(){
     const wasCap = capOpen;
