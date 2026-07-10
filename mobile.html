@@ -200,8 +200,112 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
 .capon .capbadge{ display:none !important; }
 /* タイトル中は中央のレチクル・カーソル・フォーカス枠・AF表示を隠す（文字と被らない） */
 .capon .level, .capon .reticle, .capon .focusbox, .capon .afind{ display:none !important; }
+.guide-active .level, .guide-active .reticle, .guide-active .focusbox, .guide-active .afind{ display:none !important; }
+
+/* 開始時の操作説明オーバーレイ */
+#start-guide{
+    position:absolute; inset:0; z-index:400;
+    background:rgba(0,0,0,.35);
+    display:none;
+    align-items:center; justify-content:center;
+    opacity:0;
+    transition:opacity 1.5s ease;
+}
+#start-guide.visible{ opacity:1; }
+#start-guide.closing{ transition:opacity .4s ease; opacity:0; }
+.start-guide-inner{
+    display:flex; flex-direction:column;
+    align-items:center; gap:clamp(20px,3cqh,32px);
+    width:100%; max-width:420px;
+    padding:0 32px;
+    text-align:center;
+}
+.start-guide-title{
+    font-family:'Zen Kaku Gothic New',sans-serif;
+    font-weight:700;
+    font-size:clamp(11px,1.3cqw,14px);
+    letter-spacing:.32em; text-indent:.32em;
+    color:rgba(255,255,255,.7);
+}
+.start-guide-rows{
+    display:flex; flex-direction:column;
+    gap:clamp(14px,1.8cqh,20px);
+    width:100%;
+}
+.start-guide-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:24px; align-items:center;
+    width:100%;
+}
+.start-guide-key{
+    font-family:'Share Tech Mono',monospace;
+    font-size:clamp(12px,1.4cqw,15px);
+    letter-spacing:.1em;
+    color:rgba(255,255,255,.92);
+    text-align:right;
+}
+.start-guide-desc{
+    font-family:'Zen Kaku Gothic New',sans-serif;
+    font-size:clamp(11px,1.3cqw,14px);
+    letter-spacing:.06em;
+    color:rgba(255,255,255,.72);
+    text-align:left;
+}
+.start-guide-concept{
+    font-family:'Zen Kaku Gothic New',sans-serif;
+    font-weight:700;
+    font-size:clamp(11px,3.2vw,15px);
+    letter-spacing:.06em;
+    color:rgba(255,255,255,.9);
+    text-align:center;
+    white-space:nowrap;
+}
+.start-guide-ok{
+    font-family:'Share Tech Mono',monospace;
+    font-size:clamp(12px,1.4cqw,15px);
+    letter-spacing:.16em;
+    color:rgba(255,255,255,.85);
+    background:transparent;
+    border:1px solid rgba(255,255,255,.4);
+    padding:12px 40px;
+    cursor:pointer;
+    transition:border-color .2s ease, background .2s ease;
+}
+.start-guide-ok:hover{ border-color:rgba(255,255,255,.8); background:rgba(255,255,255,.08); }
 /* タイトル中はシャッターボタンを見せたまま機能だけ無効（押せないと分かる程度に減光） */
 .capon .shutter{ pointer-events:none; opacity:.5; }
+
+/* エンディングでのシャッター誘導点滅 */
+@keyframes shutterPulse{
+    0%, 100%{ opacity:1; transform:scale(1); filter:drop-shadow(0 0 0 rgba(255,255,255,0)); }
+    50%{ opacity:.4; transform:scale(1.12); filter:drop-shadow(0 0 16px rgba(255,255,255,.9)); }
+}
+.shutter.pulse{ animation:shutterPulse 1.6s ease-in-out infinite; }
+.shutter.settling{ transition:opacity .6s ease, transform .6s ease, filter .6s ease; opacity:1; transform:scale(1); filter:drop-shadow(0 0 0 rgba(255,255,255,0)); }
+
+/* シャッター誘導：左右の集中線（円と同期して明滅・呼吸に合わせて広がる） */
+.shutter-line{
+    position:absolute; top:50%; width:14px; height:2px; background:#fff;
+    opacity:0; transform:translateY(-50%); pointer-events:none; display:none;
+}
+.line-l{ left:-22px; }
+.line-r{ right:-22px; }
+@keyframes linePulseL{
+    0%, 100%{ opacity:1; transform:translateY(-50%) translateX(0); filter:drop-shadow(0 0 6px rgba(255,255,255,.8)); }
+    50%{ opacity:.3; transform:translateY(-50%) translateX(-6px); filter:drop-shadow(0 0 0 rgba(255,255,255,0)); }
+}
+@keyframes linePulseR{
+    0%, 100%{ opacity:1; transform:translateY(-50%) translateX(0); filter:drop-shadow(0 0 6px rgba(255,255,255,.8)); }
+    50%{ opacity:.3; transform:translateY(-50%) translateX(6px); filter:drop-shadow(0 0 0 rgba(255,255,255,0)); }
+}
+.line-l.pulse{ display:block; animation:linePulseL 1.6s ease-in-out infinite; }
+.line-r.pulse{ display:block; animation:linePulseR 1.6s ease-in-out infinite; }
+.line-l.fade-in, .line-r.fade-in{
+    display:block; opacity:0; transition:opacity .8s ease;
+}
+.line-l.fade-in.show, .line-r.fade-in.show{ opacity:1; }
+.shutter-line.settling{ display:block; transition:opacity .6s ease, transform .6s ease, filter .6s ease; opacity:0; transform:translateY(-50%) translateX(0); filter:drop-shadow(0 0 0 rgba(255,255,255,0)); }
 
 /* エンディングでのシャッター誘導点滅 */
 @keyframes shutterPulse{
@@ -463,6 +567,20 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
     display:flex; flex-direction:column;
     gap:10px; width:100%; max-width:280px;
 }
+.end-credit-line{
+    font-family:'Share Tech Mono',monospace;
+    font-size:clamp(8px,0.9cqw,10px);
+    letter-spacing:.12em;
+    color:rgba(255,255,255,.6);
+    text-align:center;
+    margin-top:clamp(10px,1.6cqh,16px);
+}
+.end-credit-line a{
+    color:inherit; text-decoration:none;
+    border-bottom:1px solid transparent;
+    transition:border-color .2s ease;
+}
+.end-credit-line a:hover{ border-bottom-color:rgba(255,255,255,.4); }
 .end-btn{
     font-family:'Share Tech Mono',monospace;
     font-size:clamp(10px,1.1cqw,12px);
@@ -475,7 +593,7 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
 }
 .end-btn:hover{ border-color:rgba(255,255,255,.75); background:rgba(255,255,255,.07); color:#fff; }
 .end-btn.primary{ border-color:rgba(255,255,255,.52); color:rgba(255,255,255,.95); }
-.end-btn.muted{ border-color:rgba(255,255,255,.18); color:rgba(255,255,255,.65); font-size:clamp(9px,1cqw,11px); }
+.end-btn.muted{ border-color:rgba(255,255,255,.3); color:rgba(255,255,255,.85); font-size:clamp(9px,1cqw,11px); }
 #end-share{
     position:absolute; inset:0; z-index:4; display:none;
     flex-direction:column; align-items:center; justify-content:center;
@@ -670,6 +788,24 @@ html, body{ height:100%; overflow:hidden; overscroll-behavior:none; }
         <div class="fx-dof"></div>
         <div class="fx-evlum" id="evlum"></div>
         <div id="findfade"></div>
+
+        <!-- 開始時の操作説明オーバーレイ -->
+        <div id="start-guide">
+            <div class="start-guide-inner">
+                <div class="start-guide-concept">シャッターを切って思い出を振り返ろう</div>
+                <div class="start-guide-rows">
+                    <div class="start-guide-row">
+                        <span class="start-guide-key">スワイプ</span>
+                        <span class="start-guide-desc">移動する</span>
+                    </div>
+                    <div class="start-guide-row">
+                        <span class="start-guide-key">タップ</span>
+                        <span class="start-guide-desc">撮影する</span>
+                    </div>
+                </div>
+                <button class="start-guide-ok" onclick="closeStartGuide()">OK</button>
+            </div>
+        </div>
         <div class="level"><span class="ring"></span><span class="lh"></span><span class="rh"></span><span class="dot"></span></div>
         <div class="focusbox"><span class="a"></span><span class="b"></span><span class="c"></span><span class="d"></span></div>
         <div class="afind">◎ AF</div>
@@ -760,11 +896,9 @@ html, body{ height:100%; overflow:hidden; overscroll-behavior:none; }
                 </div>
                 <div class="cluster center">
                     <div style="position:relative; display:inline-flex; align-items:center; justify-content:center;">
+                        <span class="shutter-line line-l"></span>
                         <button class="shutter" id="shutter" onclick="shoot()" aria-label="シャッター"></button>
-                        <div class="op-hint" id="op-hint">
-                            <span class="op-key">←<span style="margin-left:11px">→</span></span><span class="op-sep">:</span><span class="op-desc">移動する</span>
-                            <span class="op-key">SPACE</span><span class="op-sep">:</span><span class="op-desc">撮影する</span>
-                        </div>
+                        <span class="shutter-line line-r"></span>
                     </div>
                 </div>
                 <div class="cluster right">
@@ -789,7 +923,6 @@ html, body{ height:100%; overflow:hidden; overscroll-behavior:none; }
             <div class="capui-inner">
                 <div class="end-date">2026.7.18-7.19 <span style="letter-spacing:.32em">パフェコミ</span></div>
                 <div class="cap-title">嘘シャニマス聖地合同</div>
-                <div class="cap-sub">シャッターを切って思い出を振り返ろう</div>
                 <button class="cap-ok" onclick="startExperience()">フォトモードを始める</button>
                 <a class="cap-yt" id="cap-yt" href="https://www.youtube.com/playlist?list=PLBkO5Qx_9Igw" target="_blank" rel="noopener">撮影をやめて YouTube で見る</a>
             </div>
@@ -836,6 +969,7 @@ html, body{ height:100%; overflow:hidden; overscroll-behavior:none; }
                 <div class="end-btns">
                     <button class="end-btn muted" onclick="closeEnding()">タイトルに戻る</button>
                 </div>
+                <div class="end-credit-line">制作：<a href="https://x.com/shinyplace283" target="_blank" rel="noopener">嘘シャニマス聖地</a></div>
             </div>
 
             <div id="end-share">
@@ -1171,7 +1305,7 @@ function firePresence(){
 
 let slideCount = 0;
 function slide(dir){
-    if(capOpen || playerOpen || afterglowOpen || endingOpen) return;
+    if(capOpen || playerOpen || afterglowOpen || endingOpen || guideOpen) return;
     if(order.length===0) buildOrder();
     orderPos = (orderPos + dir + order.length) % order.length;
     showSpot(order[orderPos], true, dir);
@@ -1193,6 +1327,7 @@ let playerOpen = false;
 let afterglowOpen = false;
 let capOpen = true;          // タイトル（レンズキャップ）表示中
 let shutterLock = false;     // 開始直後の誤シャッター防止
+let guideOpen = false;       // 開始時の操作説明表示中フラグ
 let endingOpen = false;
 let tutorialActive = false;  // 操作説明表示中
 // OKボタン：レンズキャップを外して体験開始。被写体が暗→明、準備でき次第AF＋検知ログ
@@ -1200,20 +1335,42 @@ function startExperience(){
     if(!capOpen) return;
     capOpen = false;
     shutterLock = true;
+    guideOpen = true;
     const dark = document.getElementById('capdark');
     const ui   = document.getElementById('capui');
     ui.classList.add('off');
 
     // 暗転を明ける（1s後）
     setTimeout(()=>{
-        shutterLock = false;
+        // capdarkを薄暗い状態まで下げる（映像がうっすら見える程度）
+        dark.style.transition = 'opacity 1s ease';
+        dark.style.opacity = '0.55';
         scr.classList.remove('capon');
-        dark.classList.add('off');
-        setTimeout(()=>{ dark.style.display='none'; ui.style.display='none'; }, 1100);
-        fireFirstPresence();
+
+        scr.classList.add('guide-active');
+        const guide = document.getElementById('start-guide');
+        guide.style.display = 'flex';
+        void guide.offsetWidth;
+        guide.classList.add('visible');
     }, 1000);
 
     try{ vid.play(); }catch(e){}
+}
+function closeStartGuide(){
+    const guide = document.getElementById('start-guide');
+    const dark = document.getElementById('capdark');
+    const ui = document.getElementById('capui');
+    guide.classList.remove('visible');
+    guide.classList.add('closing');
+    setTimeout(()=>{ guide.style.display = 'none'; guide.classList.remove('closing'); }, 400);
+    scr.classList.remove('guide-active');
+    // ガイドを閉じたタイミングで完全に明るくする
+    dark.style.transition = 'opacity 1s ease';
+    dark.style.opacity = '0';
+    setTimeout(()=>{ dark.style.display='none'; ui.style.display='none'; }, 1000);
+    shutterLock = false;
+    guideOpen = false;
+    fireFirstPresence();
 }
 // 起動時の最初の気配：動画がcanplay（再生可能）になり次第、AF＋検知ログを1回だけ
 function fireFirstPresence(){
@@ -1335,11 +1492,12 @@ function shoot(){
             scr.classList.remove('flashing'); void scr.offsetWidth; scr.classList.add('flashing');
             const sh = document.getElementById('shutter');
             if(sh) sh.classList.remove('pulse');
+            document.querySelectorAll('.shutter-line').forEach(l=>l.classList.remove('pulse'));
             setTimeout(()=>openEndShare(), 280);
         }
         return;
     }
-    if(playerOpen || afterglowOpen || capOpen || shutterLock) return;
+    if(playerOpen || afterglowOpen || capOpen || shutterLock || guideOpen) return;
     const frameURL = captureFrame();
     if(!frameURL) return;
     const spot = SPOTS[index];
@@ -1349,8 +1507,6 @@ function shoot(){
     // シャッター2回でヒントを消す
     shootCount++;
     if(shootCount >= 2){
-        const hint = document.getElementById('op-hint');
-        if(hint) hint.classList.add('hidden');
         hideMobileHint();
     }
     setTimeout(()=>openPlayer(spot), 280);
@@ -1499,7 +1655,22 @@ function openEnding(){
     setTimeout(()=>{
         document.getElementById('end-content').classList.add('visible');
         const sh = document.getElementById('shutter');
+        const lines = document.querySelectorAll('.shutter-line');
+        // 円は即座に自然な明滅を開始（0%地点からスタート）
         if(sh) sh.classList.add('pulse');
+        // 円が最初のサイクルで「一番暗い」地点（0.8秒後）に線が同じ位相で合流
+        setTimeout(()=>{
+            lines.forEach(l=>{
+                l.style.transition = 'none';
+                l.style.opacity = '0';
+                l.style.animationDelay = '-0.8s';
+                l.classList.add('pulse');
+                void l.offsetWidth;
+                l.style.transition = 'opacity .8s ease';
+                l.style.opacity = '';
+                setTimeout(()=>{ l.style.transition = ''; }, 900);
+            });
+        }, 800);
     }, 7000);
 }
 
@@ -1631,6 +1802,7 @@ window.addEventListener('keydown', e=>{
         if(e.code==='Space' || e.key==='Enter'){ e.preventDefault(); startExperience(); }
         return;
     }
+    if(guideOpen){ return; }
     if(endingOpen){
         if(e.code==='Space'){ e.preventDefault(); shoot(); }
         return;
@@ -1653,7 +1825,7 @@ function ambientExposureDrift(){
     nudgeExposure();
 }
 function ambientTick(){
-    if(!playerOpen && !capOpen && !endingOpen && document.visibilityState==='visible' && vid.readyState>=3){
+    if(!playerOpen && !capOpen && !endingOpen && !guideOpen && document.visibilityState==='visible' && vid.readyState>=3){
         const r = Math.random();
         if(r < 0.45)      firePresence();          // 波形がふと
         else if(r < 0.65) ambientExposureDrift();  // 露出がふと動く（AFと同程度の発生率に抑制）
@@ -1694,7 +1866,7 @@ scheduleAmbient();
     scr.addEventListener('touchend', e => {
         if(!tracking) return;
         tracking = false;
-        if(capOpen || playerOpen || afterglowOpen || endingOpen) return;
+        if(capOpen || playerOpen || afterglowOpen || endingOpen || guideOpen) return;
 
         const t  = e.changedTouches[0];
         const dx = t.clientX - sx;
