@@ -1809,10 +1809,8 @@ function backToFinder(spot){
     if(viewed.size === SPOTS.length){
         endingOpen = true;
         try{ vid.pause(); vid.src = ''; }catch(e){}
-        // SS・ISO・検知ログをフェードアウト
-        const camInfo = document.getElementById('mobile-cam-info');
+        // 検知ログのみフェードアウト（左下のISO/SS表示は最後まで表示したままにする）
         const logEl = document.querySelector('.log');
-        if(camInfo){ camInfo.style.transition='opacity 1.5s ease'; camInfo.style.opacity='0'; }
         if(logEl){
             const currentOpacity = window.getComputedStyle(logEl).opacity;
             logEl.style.opacity = currentOpacity;
@@ -1913,7 +1911,7 @@ function openEnding(){
         startEndingWave();
 
         // ④ クレジット表示（映像が見え始めてから3.2s後。スケッチを眺める時間を確保）
-        await aiWait(4800, 'ed');
+        await aiWait(3600, 'ed');
         document.getElementById('end-content').classList.add('visible');
         const sh = document.getElementById('shutter');
         const lines = document.querySelectorAll('.shutter-line');
