@@ -179,7 +179,7 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
 }
 #ai-op.visible{ opacity:1; pointer-events:auto; }
 .ai-convo{
-    position:absolute; left:34%; top:22vh;
+    position:absolute; left:26%; top:16vh;
     width:auto; max-width:70%;
     display:flex; flex-direction:column; gap:1.1em;
     font-family:'Share Tech Mono',monospace;
@@ -1000,11 +1000,12 @@ html, body{ height:100%; overflow:hidden; overscroll-behavior:none; }
             <video id="endvid" src="wako_end.mov" muted playsinline loop></video>
             <div id="endveil"></div>
             <div class="letterbox lb-top" id="end-lb-top" style="z-index:5;"></div>
-            <div class="letterbox lb-bottom" id="end-lb-bottom" style="z-index:5;"><span class="ai-skip-hint" id="ai-ed-skip" onclick="aiRequestSkip('ed')">スキップ ▷</span></div>
+            <div class="letterbox lb-bottom" id="end-lb-bottom" style="z-index:5;"></div>
             <div class="corners" style="z-index:6;"><span class="tl"></span><span class="tr"></span><span class="bl"></span><span class="br"></span></div>
             <div id="endfade">
                 <div id="end-complete">ALL MEMORIES CAPTURED</div>
                 <div class="ai-convo" id="ai-ed-convo"></div>
+                <span class="ai-skip-hint" id="ai-ed-skip" onclick="aiRequestSkip('ed')">スキップ ▷</span>
             </div>
 
             <div id="end-content">
