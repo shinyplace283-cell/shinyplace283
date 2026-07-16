@@ -171,6 +171,50 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
     white-space:nowrap;
 }
 /* タイトルUI：HUDより前面・中央。OKで消える */
+/* ───── AI対話演出（OP/ED共通） ───── */
+#ai-op{
+    position:absolute; inset:0; z-index:121; background:#000;
+    display:flex; align-items:center; justify-content:center;
+    opacity:0; pointer-events:none; transition:opacity .8s ease;
+}
+#ai-op.visible{ opacity:1; pointer-events:auto; }
+.ai-convo{
+    position:absolute; left:34%; top:22vh;
+    width:auto; max-width:70%;
+    display:flex; flex-direction:column; gap:1.1em;
+    font-family:'Share Tech Mono',monospace;
+    font-size:clamp(15px,2.4cqw,22px);
+}
+.ai-line{ display:grid; grid-template-columns:3.6em 1fr; column-gap:.6em; line-height:1.6; }
+.ai-line .ai-lbl{ font-weight:700; }
+.ai-line .ai-lbl.you{ color:#88C0D0; }
+.ai-line .ai-lbl.iris{ color:#fabd2f; }
+.ai-line .ai-txt{ color:rgba(255,255,255,.88); white-space:pre-wrap; }
+.ai-think{ display:grid; grid-template-columns:3.6em 1fr; column-gap:.6em; align-items:center; }
+.ai-think .ai-lbl{ font-weight:700; color:#fabd2f; }
+.ai-think .dots{ display:inline-flex; gap:4px; }
+.ai-think .dots i{ width:5px; height:5px; border-radius:50%; background:#fabd2f; opacity:.4; animation:aiThinkPulse 1s ease-in-out infinite; }
+.ai-think .dots i:nth-child(2){ animation-delay:.15s; }
+.ai-think .dots i:nth-child(3){ animation-delay:.3s; }
+@keyframes aiThinkPulse{ 0%,100%{ opacity:.3; transform:scale(1); } 50%{ opacity:1; transform:scale(1.3); } }
+.ai-prompt-row{ display:flex; justify-content:flex-start; padding-left:4.2em; margin-top:.2em; }
+.ai-prompt-btn{
+    font-family:'Share Tech Mono',monospace; font-size:.95em; letter-spacing:.06em;
+    color:#fff; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.5);
+    border-radius:2px; padding:.55em 1.3em; cursor:pointer; transition:.15s;
+}
+.ai-prompt-btn:hover{ background:rgba(255,255,255,.16); border-color:#fff; }
+.ai-skip-hint{
+    position:absolute; right:6%; bottom:16%;
+    font-family:'Share Tech Mono',monospace; font-size:11px; letter-spacing:.1em;
+    color:rgba(255,255,255,.7); pointer-events:auto; cursor:pointer;
+    padding:.5em 1em; border:1px solid rgba(255,255,255,.3); border-radius:2px;
+    background:rgba(0,0,0,.25);
+    opacity:0; transition:opacity .4s ease, border-color .2s ease, color .2s ease; z-index:8;
+}
+.ai-skip-hint.show{ opacity:1; }
+.ai-skip-hint:hover{ color:#fff; border-color:rgba(255,255,255,.7); }
+
 .capui{ position:absolute; inset:0; z-index:215; display:flex; align-items:center; justify-content:center;
     text-align:center; transition:opacity .8s ease; }
 .capui.off{ opacity:0; pointer-events:none; }
@@ -370,7 +414,7 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
     position:absolute; inset:0; width:100%; height:100%;
     object-fit:cover; z-index:0;
 }
-#endveil{ position:absolute; inset:0; z-index:1; background:rgba(0,0,0,.52); }
+#endveil{ position:absolute; inset:0; z-index:1; background:rgba(0,0,0,.32); }
 #endfade{
     position:absolute; inset:0; z-index:3;
     background:#000; opacity:1;
@@ -427,16 +471,13 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
     color:rgba(255,255,255,.7);
 }
 .start-guide-rows{
-    display:flex; flex-direction:column;
-    gap:clamp(14px,1.8cqh,20px);
-    width:100%;
-}
-.start-guide-row{
     display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:24px; align-items:center;
-    width:100%;
+    grid-template-columns:auto auto;
+    column-gap:24px; row-gap:clamp(14px,1.8cqh,20px);
+    width:fit-content;
+    margin:0 auto;
 }
+.start-guide-row{ display:contents; }
 .start-guide-key{
     font-family:'Share Tech Mono',monospace;
     font-size:clamp(12px,1.4cqw,15px);
@@ -467,7 +508,9 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
     color:rgba(255,255,255,.85);
     background:transparent;
     border:1px solid rgba(255,255,255,.4);
-    padding:12px 40px;
+    width:100%; box-sizing:border-box;
+    padding:12px 0;
+    text-align:center;
     cursor:pointer;
     transition:border-color .2s ease, background .2s ease;
 }
@@ -537,20 +580,23 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
     display:flex; flex-direction:column;
     gap:10px; width:100%; max-width:280px;
 }
-.end-credit-line{
+.end-credits-meta{
+    display:grid; grid-template-columns:auto auto;
+    width:fit-content; margin:clamp(10px,1.6cqh,16px) auto 0;
+    column-gap:.4em; row-gap:4px;
     font-family:'Share Tech Mono',monospace;
     font-size:clamp(8px,0.9cqw,10px);
     letter-spacing:.12em;
     color:rgba(255,255,255,.6);
-    text-align:center;
-    margin-top:clamp(10px,1.6cqh,16px);
 }
-.end-credit-line a{
+.end-credits-meta .label{ text-align:right; white-space:nowrap; }
+.end-credits-meta .name{ text-align:left; }
+.end-credits-meta a{
     color:inherit; text-decoration:none;
     border-bottom:1px solid transparent;
     transition:border-color .2s ease;
 }
-.end-credit-line a:hover{ border-bottom-color:rgba(255,255,255,.4); }
+.end-credits-meta a:hover{ border-bottom-color:rgba(255,255,255,.4); }
 .end-btn{
     font-family:'Share Tech Mono',monospace;
     font-size:clamp(10px,1.1cqw,12px);
@@ -741,6 +787,9 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
         <!-- 撮影フラッシュ -->
         <div class="flash"></div>
 
+        <!-- OP: AIとの対話演出（タイトルの「フォトモードを始める」を押した後に再生） -->
+        <div id="ai-op"><div class="ai-convo" id="ai-op-convo"></div><span class="ai-skip-hint" id="ai-op-skip" onclick="aiRequestSkip('op')">スキップ ▷</span></div>
+
         <!-- タイトル（中央・HUDより前面）。OKで消える -->
         <div class="capui" id="capui">
             <div class="capui-inner">
@@ -759,7 +808,7 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
             <div class="credit"><span class="credit-title" id="credit-title">タイトル</span><span class="credit-author" id="credit-author">制作者</span></div>
             <div class="pbtns">
                 <button class="pyt pxshare" onclick="closePlayerToAfterglow()">撮影した写真を見る</button>
-                <button class="pclose" onclick="closePlayer()">Esc 撮影に戻る</button>
+                <button class="pclose" onclick="closePlayer()">撮影に戻る</button>
             </div>
             <p class="pnote"><a class="cap-yt" href="https://www.youtube.com/playlist?list=PLBkO5Qx_9Igw" target="_blank" rel="noopener">YouTube でまとめて見る</a></p>
         </div>
@@ -768,9 +817,9 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
         <div class="afterglow" id="afterglow">
             <img id="ag-photo" class="ag-photo" alt="撮影したチェキ">
             <div class="pbtns">
-                <a class="pyt pxshare" id="ag-xshare" href="" target="_blank" rel="noopener">X を開く</a>
+                <a class="pyt pxshare" id="ag-xshare" href="" target="_blank" rel="noopener">Xで思い出を共有する</a>
                 <a class="pyt" id="ag-save" href="#" download>画像を保存する</a>
-                <button class="pclose" onclick="closeAfterglow()">Esc 撮影に戻る</button>
+                <button class="pclose" onclick="closeAfterglow()">撮影に戻る</button>
             </div>
 
         </div>
@@ -779,10 +828,13 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
         <div id="ending">
             <video id="endvid" src="wako_end.mov" muted playsinline loop></video>
             <div id="endveil"></div>
-            <div class="letterbox lb-top" id="end-lb-top" style="z-index:1;"></div>
-            <div class="letterbox lb-bottom" id="end-lb-bottom" style="z-index:1;"></div>
+            <div class="letterbox lb-top" id="end-lb-top" style="z-index:5;"></div>
+            <div class="letterbox lb-bottom" id="end-lb-bottom" style="z-index:5;"></div>
+            <div class="corners" style="z-index:6;"><span class="tl"></span><span class="tr"></span><span class="bl"></span><span class="br"></span></div>
             <div id="endfade">
                 <div id="end-complete">ALL MEMORIES CAPTURED</div>
+                <div class="ai-convo" id="ai-ed-convo"></div>
+                <span class="ai-skip-hint" id="ai-ed-skip" onclick="aiRequestSkip('ed')">スキップ ▷</span>
             </div>
 
             <div id="end-content">
@@ -795,7 +847,10 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
                 <div class="end-btns">
                     <button class="end-btn muted" onclick="closeEnding()">タイトルに戻る</button>
                 </div>
-                <div class="end-credit-line">制作：<a href="https://x.com/shinyplace283" target="_blank" rel="noopener">嘘シャニマス聖地</a></div>
+                <div class="end-credits-meta">
+                    <span class="label">エンディング映像：</span><span class="name"><a href="https://x.com/urata_wako" target="_blank" rel="noopener">わこー</a></span>
+                    <span class="label">企画・サイト制作：</span><span class="name"><a href="https://x.com/shinyplace283" target="_blank" rel="noopener">嘘シャニマス聖地</a></span>
+                </div>
             </div>
 
             <div id="end-share">
@@ -805,7 +860,7 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
                 </div>
                 <div class="end-share-btns">
                     <button class="end-btn primary" onclick="saveEndCheki()">画像を保存する</button>
-                    <a class="end-btn" id="end-cheki-x" href="" target="_blank" rel="noopener">X を開く</a>
+                    <a class="end-btn" id="end-cheki-x" href="" target="_blank" rel="noopener">Xで思い出を共有する</a>
                 </div>
                 <button class="end-share-back" onclick="closeEndShare()">← 戻る</button>
             </div>
@@ -1152,17 +1207,207 @@ let guideOpen = false;       // 開始時の操作説明表示中フラグ
 let endingOpen = false;
 let tutorialActive = false;  // 操作説明表示中
 // OKボタン：レンズキャップを外して体験開始。被写体が暗→明、準備でき次第AF＋検知ログ
+/* ───── AI対話演出（OP/ED共通ロジック） ───── */
+const AI_OP_LINES = [
+    {who:'you',  text:'誰にも言えないんだけどさ', pause:850, hesitate:450},
+    {who:'iris', text:'私でよければ聞きますよ。', pause:750, think:true},
+    {who:'you',  text:'彼女たちは実在するの？', pause:1150, hesitate:400},
+    {who:'iris', text:'もちろんです。今だって、側にいるじゃないですか。', pause:750},
+    {who:'you',  text:'見えてないんだ、本当は', pause:1100, hesitate:550},
+    {who:'iris', text:'いいえ。あなたは忘れているだけです。', pause:750, think:true},
+    {who:'iris', text:'これまで何枚も写真を撮ってきましたよね？', pause:900},
+    {who:'you',  text:'そうだけど', pause:800, hesitate:400},
+    {who:'iris', text:'もう一度、撮りに行くのはいかがでしょうか。', pause:750, think:true},
+    {who:'iris', text:'きっと思い出すはずです。', pause:1100},
+];
+const AI_ED_LINES = [
+    {who:'you',  text:'思い出した、全部', pause:800},
+    {who:'iris', text:'それはよかったです。', pause:700},
+    {who:'iris', text:'今度は覚えていられそうですか？', pause:900, think:true},
+    {who:'you',  text:'どうだろう。またいつか忘れてしまうのかな', pause:1050, hesitate:550},
+    {who:'iris', text:'それなら、いい方法があります。', pause:700, think:true},
+    {who:'iris', text:'記録に残しておきましょう。', pause:950},
+    {who:'you',  text:'どうやって？', pause:800},
+    {who:'iris', text:'どんな方法でもいいと思います。写真でも、文章でも。', pause:700},
+    {who:'iris', text:'手始めに、絵など描いてみては？', pause:950, think:true},
+    {who:'you',  text:'それはいい。やってみるよ', pause:800},
+];
+const AI_LABELS = {you:'You:', iris:'Iris:'};
+const aiSkipState = {op:false, ed:false};
+
+function aiRequestSkip(key){ aiSkipState[key] = true; }
+
+function aiWait(ms, skipKey){
+    return new Promise(res=>{
+        if(!skipKey){ setTimeout(res, ms); return; }
+        const start = Date.now();
+        const check = ()=>{
+            if(aiSkipState[skipKey] || Date.now() - start >= ms){ res(); return; }
+            setTimeout(check, 80);
+        };
+        check();
+    });
+}
+
+function aiTypeInto(el, text, mechanical, skipKey){
+    const charsPerSec = mechanical ? 24 : 28;
+    return new Promise(resolve=>{
+        let start = null;
+        function step(ts){
+            if(skipKey && aiSkipState[skipKey]){ el.textContent = text; resolve(); return; }
+            if(start === null) start = ts;
+            const elapsed = ts - start;
+            const count = Math.min(text.length, Math.floor(elapsed * charsPerSec / 1000));
+            el.textContent = text.slice(0, count);
+            if(count >= text.length){ resolve(); return; }
+            requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+    });
+}
+
+async function aiShowThink(container, lastWhoRef, ms, skipKey){
+    const row = document.createElement('div');
+    row.className = 'ai-think';
+    row.innerHTML = `<span class="ai-lbl">${lastWhoRef.value==='iris' ? '' : AI_LABELS.iris}</span>`
+        + `<span class="dots"><i></i><i></i><i></i></span>`;
+    container.appendChild(row);
+    await aiWait(ms, skipKey);
+    row.remove();
+}
+
+async function aiPlayLine(container, line, lastWhoRef, skipKey){
+    if(line.who === 'iris') await aiShowThink(container, lastWhoRef, line.think ? 950 : 300, skipKey);
+
+    const row = document.createElement('div');
+    row.className = 'ai-line';
+    const label = document.createElement('span');
+    label.className = 'ai-lbl ' + (line.who==='you' ? 'you' : 'iris');
+    label.textContent = lastWhoRef.value===line.who ? '' : AI_LABELS[line.who];
+    const txt = document.createElement('span');
+    txt.className = 'ai-txt';
+    row.appendChild(label); row.appendChild(txt);
+    container.appendChild(row);
+
+    if(line.hesitate) await aiWait(line.hesitate, skipKey);
+    await aiTypeInto(txt, line.text, line.who==='iris', skipKey);
+    lastWhoRef.value = line.who;
+
+    if(line.promptLabel){
+        await aiWait(500, skipKey);
+        await new Promise(resolve=>{
+            const btnRow = document.createElement('div');
+            btnRow.className = 'ai-prompt-row';
+            const btn = document.createElement('button');
+            btn.className = 'ai-prompt-btn';
+            btn.textContent = line.promptLabel;
+            btn.onclick = ()=>{ btnRow.remove(); resolve(); };
+            btnRow.appendChild(btn);
+            container.appendChild(btnRow);
+        });
+    } else {
+        await aiWait(line.pause, skipKey);
+    }
+}
+
+// 再生前に最終的な高さを計測し、安全域(画面の12%〜88%)に収まるよう
+// 開始位置とフォントサイズを自動調整する（OP=短い/ED=長い、両方に対応するため）
+function aiMeasureAndFit(container){
+    container.style.top = '0px';
+    container.style.fontSize = '';
+    // ※ここでは innerHTML を消さない（呼び出し側が計測用に仮描画した中身を測る）
+
+    const stageEl = container.closest('#ai-op') || container.closest('#endfade') || container.parentElement;
+    const stageH = stageEl.clientHeight || window.innerHeight;
+    const safeTop = stageH * 0.14;
+    const safeBottom = stageH * 0.86;
+
+    // 1行目の開始位置：OP/EDでそれぞれ個別に調整（内容量が違うため）
+    const isEd = container.id === 'ai-ed-convo';
+    const startTop = safeTop + stageH * (isEd ? 0.05 : 0.06);
+    const available = safeBottom - startTop;
+
+    let totalH = container.scrollHeight;
+    if(totalH > available){
+        const scale = Math.max(0.62, available / totalH);
+        container.style.fontSize = `calc(clamp(15px,2.4cqw,22px) * ${scale})`;
+    }
+
+    container.style.top = startTop + 'px';
+    container.innerHTML = '';
+}
+
+function aiPrebuildFullText(container, lines){
+    lines.forEach(l=>{
+        if(l.think){
+            const t = document.createElement('div');
+            t.className = 'ai-think';
+            t.innerHTML = `<span class="ai-lbl"></span><span class="dots"><i></i><i></i><i></i></span>`;
+            container.appendChild(t);
+        }
+        const row = document.createElement('div');
+        row.className = 'ai-line';
+        row.innerHTML = `<span class="ai-lbl">${AI_LABELS[l.who]}</span><span class="ai-txt">${l.text}</span>`;
+        container.appendChild(row);
+    });
+}
+
+async function aiPlayConversation(containerId, lines){
+    const container = document.getElementById(containerId);
+    const skipKey = containerId === 'ai-ed-convo' ? 'ed' : 'op';
+    const skipHint = document.getElementById(skipKey === 'ed' ? 'ai-ed-skip' : 'ai-op-skip');
+
+    // Webフォントの読み込み完了を待ってから高さを測る
+    // （読み込み前に測ると代替フォントの寸法で測ってしまい、後で実際の文字が
+    //   大きくなってはみ出すことがあるため）
+    try{ await document.fonts.ready; }catch(e){}
+
+    // 高さ計測・位置とフォントサイズの自動調整（内容は一旦仮描画→消去）
+    aiPrebuildFullText(container, lines);
+    aiMeasureAndFit(container);
+
+    // スキップのヒント表示（消し方はOP/EDそれぞれ呼び出し元で制御）
+    if(skipHint) skipHint.classList.add('show');
+
+    const lastWhoRef = { value: null };
+    for(const line of lines){
+        if(aiSkipState[skipKey]) break; // 既にスキップ済みなら、1行も描画しない
+        await aiPlayLine(container, line, lastWhoRef, skipKey);
+    }
+
+    // OP側は「会話をスキップ」表示を個別にフェードさせず、#ai-op全体の
+    // フェード（visibleクラスの着脱）と一緒に消えるよう、ここでは触らない
+    await aiWait(aiSkipState[skipKey] ? 300 : 1000);
+}
+
 function startExperience(){
     if(!capOpen) return;
     capOpen = false;
     shutterLock = true;
     guideOpen = true;
-    const dark = document.getElementById('capdark');
-    const ui   = document.getElementById('capui');
+    const ui = document.getElementById('capui');
     ui.classList.add('off');
 
-    // 暗転を明ける（1s後）
+    // タイトルが消えたあと、AIとの対話（OP）を再生してから本編の暗転演出へ
     setTimeout(()=>{
+        const op = document.getElementById('ai-op');
+        op.classList.add('visible');
+        aiSkipState.op = false;
+        aiPlayConversation('ai-op-convo', AI_OP_LINES).then(()=>{
+            op.classList.remove('visible');
+            setTimeout(()=>{ startExperienceAfterConvo(); }, 400);
+        });
+    }, 1200);
+}
+
+function startExperienceAfterConvo(){
+    const dark = document.getElementById('capdark');
+    const ui   = document.getElementById('capui');
+    // 暗転を明ける
+    setTimeout(()=>{
+        // 見え始める瞬間に映像を頭出しして、ループの継ぎ目が見えないようにする
+        try{ vid.currentTime = 0; vid.play(); }catch(e){}
+
         // capdarkを薄暗い状態まで下げる（映像がうっすら見える程度）
         dark.style.transition = 'opacity 1s ease';
         dark.style.opacity = '0.55';
@@ -1173,9 +1418,12 @@ function startExperience(){
         guide.style.display = 'flex';
         void guide.offsetWidth;
         guide.classList.add('visible');
-    }, 1000);
 
-    try{ vid.play(); }catch(e){}
+        // OKボタンの幅を、操作説明2行の実際の幅に合わせる
+        const rows = document.querySelector('.start-guide-rows');
+        const ok = document.querySelector('.start-guide-ok');
+        if(rows && ok){ ok.style.width = rows.offsetWidth + 'px'; }
+    }, 550);
 }
 function closeStartGuide(){
     const guide = document.getElementById('start-guide');
@@ -1440,54 +1688,74 @@ function openEnding(){
     const endEl = document.getElementById('ending');
     const endVid = document.getElementById('endvid');
 
-    // エンディングを開く（endfadeが黒なのでまだ見えない）
+    // エンディングを開く（endfadeが黒なのでまだ見えない。対話中は映像を進めない）
     endEl.classList.add('open');
     buildEndCredits();
-    endVid.currentTime = 0;
-    endVid.play().catch(()=>{});
+    endVid.pause();
 
     // X共有文
     const shareText = `すべての思い出を振り返ったよ！\n（作者：わこー @urata_wako）\n\n${SHARE_TAG}\n${SITE_URL}`;
     document.getElementById('end-cheki-x').href =
         `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
 
-    // ① テキスト表示（300ms後）
-    setTimeout(()=>{ complete.classList.add('visible'); }, 300);
+    // ED全体をスキップ可能な一連の流れとして実行
+    aiSkipState.ed = false;
 
-    // ② テキスト消灯・CAPTURED同時フェードアウト（4s後）
-    setTimeout(()=>{
+    (async ()=>{
+        // ① テキスト表示
+        await aiWait(300, 'ed');
+        complete.classList.add('visible');
+
+        // ② テキスト消灯（保持1.8s、短縮）→ 暗転の中でAIとの対話（ED）を再生
+        await aiWait(2500, 'ed');
         complete.classList.remove('visible');
         scr.classList.add('fading');
         setTimeout(()=>{ scr.classList.remove('captured','fading'); }, 800);
-    }, 4000);
 
-    // ③ フェードイン（4.5s後・1.2sかけて）— 動画が見え始める瞬間に波形の風を開始
-    setTimeout(()=>{
+        await aiWait(1200, 'ed');
+        await aiPlayConversation('ai-ed-convo', AI_ED_LINES);
+
+        // セリフを先に完全に消してから、映像のフェードインを始める
+        // SKIPも同じタイミング・同じ方式で一緒に消える
+        const edConvo = document.getElementById('ai-ed-convo');
+        const edSkipHint = document.getElementById('ai-ed-skip');
+        edConvo.style.transition = 'opacity .5s ease';
+        edConvo.style.opacity = '0';
+        if(edSkipHint) edSkipHint.classList.remove('show');
+        await aiWait(500, 'ed');
+        edConvo.innerHTML = '';
+        edConvo.style.opacity = '';
+        edConvo.style.transition = '';
+
+        if(edSkipHint) edSkipHint.classList.remove('show');
+
+        await aiWait(1500, 'ed');
+
+        // ③ 映像を頭出しして再生・フェードイン・波形開始
+        endVid.currentTime = 0;
+        endVid.play().catch(()=>{});
         fade.classList.add('fadein');
         startEndingWave();
-    }, 4500);
 
-    // ④ クレジット表示（7.0s後 ← 0.9s早め）
-    setTimeout(()=>{
+        // ④ クレジット表示（映像が見え始めてから3.2s後。スケッチを眺める時間を確保）
+        await aiWait(3200, 'ed');
         document.getElementById('end-content').classList.add('visible');
         const sh = document.getElementById('shutter');
         const lines = document.querySelectorAll('.shutter-line');
-        // 円は即座に自然な明滅を開始（0%地点からスタート）
         if(sh) sh.classList.add('pulse');
-        // 円が最初のサイクルで「一番暗い」地点（0.8秒後）に線が同じ位相で合流
-        setTimeout(()=>{
-            lines.forEach(l=>{
-                l.style.transition = 'none';
-                l.style.opacity = '0';
-                l.style.animationDelay = '-0.8s'; // 円が0.8秒経過した位相と揃える
-                l.classList.add('pulse');
-                void l.offsetWidth;
-                l.style.transition = 'opacity .8s ease';
-                l.style.opacity = '';
-                setTimeout(()=>{ l.style.transition = ''; }, 900);
-            });
-        }, 800);
-    }, 7000);
+
+        await aiWait(800, 'ed');
+        lines.forEach(l=>{
+            l.style.transition = 'none';
+            l.style.opacity = '0';
+            l.style.animationDelay = '-0.8s';
+            l.classList.add('pulse');
+            void l.offsetWidth;
+            l.style.transition = 'opacity .8s ease';
+            l.style.opacity = '';
+            setTimeout(()=>{ l.style.transition = ''; }, 900);
+        });
+    })();
 }
 
 // エンディング中：浜辺の風を思わせる波形の揺れ（ランダムな強弱で継続）
