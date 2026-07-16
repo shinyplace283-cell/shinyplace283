@@ -179,8 +179,8 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
 }
 #ai-op.visible{ opacity:1; pointer-events:auto; }
 .ai-convo{
-    position:absolute; left:26%; top:16vh;
-    width:auto; max-width:70%;
+    position:absolute; left:18%; top:16vh;
+    width:auto; max-width:82vw;
     display:flex; flex-direction:column; gap:1.1em;
     font-family:'Share Tech Mono',monospace;
     font-size:clamp(15px,2.4cqw,22px);
@@ -1913,7 +1913,7 @@ function openEnding(){
         startEndingWave();
 
         // ④ クレジット表示（映像が見え始めてから3.2s後。スケッチを眺める時間を確保）
-        await aiWait(3200, 'ed');
+        await aiWait(4800, 'ed');
         document.getElementById('end-content').classList.add('visible');
         const sh = document.getElementById('shutter');
         const lines = document.querySelectorAll('.shutter-line');
