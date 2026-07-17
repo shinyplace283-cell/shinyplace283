@@ -1818,6 +1818,14 @@ function backToFinder(spot){
             logEl.style.transition = 'opacity 1.5s ease';
             requestAnimationFrame(()=>{ logEl.style.opacity = '0'; });
         }
+        // ISO/SS表示は何があっても消えないよう、この瞬間に強制的に固定する
+        const camInfo = document.getElementById('mobile-cam-info');
+        if(camInfo){
+            camInfo.style.setProperty('display', 'flex', 'important');
+            camInfo.style.setProperty('opacity', '1', 'important');
+            camInfo.style.setProperty('visibility', 'visible', 'important');
+            camInfo.style.setProperty('z-index', '999', 'important');
+        }
         scr.classList.remove('play-log');
         const findfade = document.getElementById('findfade');
         findfade.style.opacity = '1';
@@ -1851,6 +1859,15 @@ function openEnding(){
     endingOpen = true;
     try{ vid.pause(); }catch(e){}
     clearFx();
+
+    // ISO/SS表示を念のためここでも固定
+    const camInfo2 = document.getElementById('mobile-cam-info');
+    if(camInfo2){
+        camInfo2.style.setProperty('display', 'flex', 'important');
+        camInfo2.style.setProperty('opacity', '1', 'important');
+        camInfo2.style.setProperty('visibility', 'visible', 'important');
+        camInfo2.style.setProperty('z-index', '999', 'important');
+    }
 
     // findfadeをリセット（真っ暗防止）
     const findfade = document.getElementById('findfade');
