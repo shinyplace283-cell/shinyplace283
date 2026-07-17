@@ -179,11 +179,11 @@ h1{ font-size:17px; font-weight:700; letter-spacing:.06em; }
 }
 #ai-op.visible{ opacity:1; pointer-events:auto; }
 .ai-convo{
-    position:absolute; left:12%; top:16vh;
-    width:auto; max-width:90vw;
+    position:absolute; left:8%; top:16vh;
+    width:auto; max-width:94vw;
     display:flex; flex-direction:column; gap:1.1em;
     font-family:'Share Tech Mono',monospace;
-    font-size:clamp(15px,2.4cqw,22px);
+    font-size:clamp(15px,2.2cqw,22px);
 }
 .ai-line{ display:grid; grid-template-columns:3.6em 1fr; column-gap:.6em; line-height:1.6; }
 .ai-line .ai-lbl{ font-weight:700; }
@@ -860,7 +860,7 @@ html, body{ height:100%; overflow:hidden; overscroll-behavior:none; }
         <!-- レターボックス（上下の黒帯） -->
         <div class="letterbox lb-top"></div>
         <div class="letterbox lb-bottom"></div>
-        <div id="mobile-cam-info" style="position:absolute;bottom:0;left:0;right:0;height:var(--band-bottom, 13%);display:flex;align-items:center;justify-content:space-between;padding:0 4vw;z-index:131;pointer-events:none;">
+        <div id="mobile-cam-info" style="position:absolute;bottom:0;left:0;right:0;height:var(--band-bottom, 13%);display:flex;align-items:center;justify-content:space-between;padding:0 4vw;z-index:151;pointer-events:none;">
             <!-- 左：ISO SS -->
             <div style="font-family:'Share Tech Mono',monospace;letter-spacing:.1em;line-height:1.7;display:flex;flex-direction:column;">
                 <div style="display:flex;gap:3vw;font-size:clamp(8px,2vw,10px);color:rgba(255,255,255,.6);">
@@ -1403,7 +1403,8 @@ const AI_ED_LINES = [
     {who:'iris', text:'それなら、いい方法があります。', pause:700, think:true},
     {who:'iris', text:'記録に残しておきましょう。', pause:950},
     {who:'you',  text:'どうやって？', pause:800},
-    {who:'iris', text:'どんな方法でもいいと思います。写真でも、文章でも。', pause:700},
+    {who:'iris', text:'どんな方法でもいいと思います。', pause:400},
+    {who:'iris', text:'写真でも、文章でも。', pause:700},
     {who:'iris', text:'手始めに、絵など描いてみては？', pause:950, think:true},
     {who:'you',  text:'それはいい。やってみるよ', pause:800},
 ];
