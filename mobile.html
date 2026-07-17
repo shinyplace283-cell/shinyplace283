@@ -1912,7 +1912,7 @@ function openEnding(){
         startEndingWave();
 
         // ④ クレジット表示（映像が見え始めてから3.2s後。スケッチを眺める時間を確保）
-        await aiWait(2800, 'ed');
+        await aiWait(3500, 'ed');
         document.getElementById('end-content').classList.add('visible');
         const sh = document.getElementById('shutter');
         const lines = document.querySelectorAll('.shutter-line');
